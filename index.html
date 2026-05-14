@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fares to Fiji — Find Flights to Nadi (NAN) & Suva (SUV)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">FIJI</span>
+        <span class="brand-sub">FARES</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#search">Search</a></li>
+        <li><a href="#fares">Fares</a></li>
+        <li><a href="#routes">Routes</a></li>
+        <li><a href="#tips">Travel Tips</a></li>
+      </ul>
+    </nav>
+    <div class="hero-content">
+      <h1>Bula! Find every fare to Fiji.</h1>
+      <p class="hero-sub">
+        Compare flights from the US, Australia, New Zealand, Asia, and the Pacific to
+        Nadi (NAN) and Suva (SUV). Updated daily.
+      </p>
+      <a href="#search" class="cta">Search fares</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="search" class="search-section">
+      <h2>Search fares</h2>
+      <div class="filters">
+        <label>
+          From
+          <select id="origin">
+            <option value="">All origins</option>
+          </select>
+        </label>
+        <label>
+          To
+          <select id="destination">
+            <option value="">All Fiji airports</option>
+            <option value="NAN">Nadi (NAN)</option>
+            <option value="SUV">Suva (SUV)</option>
+          </select>
+        </label>
+        <label>
+          Airline
+          <select id="airline">
+            <option value="">Any airline</option>
+          </select>
+        </label>
+        <label>
+          Max price (USD)
+          <input type="number" id="maxPrice" min="0" step="50" placeholder="e.g. 1200" />
+        </label>
+        <label>
+          Sort by
+          <select id="sort">
+            <option value="price">Lowest price</option>
+            <option value="duration">Shortest duration</option>
+            <option value="stops">Fewest stops</option>
+          </select>
+        </label>
+        <button id="reset" class="reset-btn" type="button">Reset</button>
+      </div>
+    </section>
+
+    <section id="fares" class="fares-section">
+      <div class="fares-header">
+        <h2>Available fares</h2>
+        <div class="fares-meta">
+          <span id="resultCount" class="result-count"></span>
+          <span id="lastUpdated" class="last-updated" title="Fares auto-refresh every 5 minutes"></span>
+        </div>
+      </div>
+      <div id="fareList" class="fare-list"></div>
+      <p id="noResults" class="no-results" hidden>No fares match your filters. Try widening the price range.</p>
+    </section>
+
+    <section id="routes" class="routes-section">
+      <h2>Popular routes to Fiji</h2>
+      <div class="route-grid">
+        <div class="route-card">
+          <h3>Los Angeles → Nadi</h3>
+          <p>Daily nonstops on Fiji Airways. ~10h 45m flight time.</p>
+          <p class="route-price">From <strong>$849</strong> round-trip</p>
+        </div>
+        <div class="route-card">
+          <h3>Sydney → Nadi</h3>
+          <p>Multiple daily flights, Fiji Airways and Qantas. ~4h.</p>
+          <p class="route-price">From <strong>$420</strong> round-trip</p>
+        </div>
+        <div class="route-card">
+          <h3>Auckland → Nadi</h3>
+          <p>Short hop on Fiji Airways or Air New Zealand. ~3h.</p>
+          <p class="route-price">From <strong>$310</strong> round-trip</p>
+        </div>
+        <div class="route-card">
+          <h3>San Francisco → Nadi</h3>
+          <p>Seasonal Fiji Airways nonstop. ~11h 5m.</p>
+          <p class="route-price">From <strong>$899</strong> round-trip</p>
+        </div>
+        <div class="route-card">
+          <h3>Honolulu → Nadi</h3>
+          <p>Fiji Airways nonstop, ~6h 30m flight time.</p>
+          <p class="route-price">From <strong>$640</strong> round-trip</p>
+        </div>
+        <div class="route-card">
+          <h3>Tokyo (HND) → Nadi</h3>
+          <p>Fiji Airways nonstop, twice weekly. ~8h 30m.</p>
+          <p class="route-price">From <strong>$1,120</strong> round-trip</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tips" class="tips-section">
+      <h2>When to fly</h2>
+      <div class="tips-grid">
+        <div class="tip">
+          <h3>Cheapest months</h3>
+          <p>February, March, and November typically have the lowest fares — Fiji's wet season.</p>
+        </div>
+        <div class="tip">
+          <h3>Peak season</h3>
+          <p>June through September is dry season; expect 30–50% higher fares and book 3–4 months out.</p>
+        </div>
+        <div class="tip">
+          <h3>Best day to book</h3>
+          <p>Tuesday and Wednesday departures average 12% cheaper than weekend flights.</p>
+        </div>
+        <div class="tip">
+          <h3>Visa & entry</h3>
+          <p>Most visitors get a free 4-month visitor permit on arrival. Passport must be valid 6+ months.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Fares shown are sample published prices and subject to change. Always confirm with the airline before booking.</p>
+    <p class="footer-sub">Built for travelers heading to the islands. Vinaka.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
