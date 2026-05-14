@@ -16,11 +16,13 @@ Reads are capped at `MYSQL_ROW_LIMIT` rows (default 1000) and results are return
 
 ## Installation
 
+This project uses [uv](https://docs.astral.sh/uv/) for environment and dependency management.
+
 ```bash
-pip install -e .
+uv sync
 ```
 
-Requires Python 3.10+.
+That creates a `.venv` from `uv.lock` and installs the `mcp-mysql-server` script. Requires Python 3.10+ (uv will fetch it if missing).
 
 ## Configuration
 
@@ -42,20 +44,26 @@ Copy `.env.example` to `.env` and fill it in, or export the variables in your sh
 ## Running
 
 ```bash
-mcp-mysql-server
+uv run mcp-mysql-server
 ```
 
 The server speaks MCP over stdio.
 
 ## Claude Desktop / Claude Code config
 
-Add an entry to your `mcp` config (e.g. `~/.claude/mcp.json` or `claude_desktop_config.json`):
+Add an entry to your `mcp` config (e.g. `~/.claude/mcp.json` or `claude_desktop_config.json`). Using `uv run` keeps the server isolated in its own env:
 
 ```json
 {
   "mcpServers": {
     "mysql": {
-      "command": "mcp-mysql-server",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/python-projects",
+        "run",
+        "mcp-mysql-server"
+      ],
       "env": {
         "MYSQL_HOST": "127.0.0.1",
         "MYSQL_PORT": "3306",
@@ -66,6 +74,12 @@ Add an entry to your `mcp` config (e.g. `~/.claude/mcp.json` or `claude_desktop_
     }
   }
 }
+```
+
+Or run directly from a Git checkout without installing globally:
+
+```bash
+uvx --from git+https://github.com/<you>/python-projects mcp-mysql-server
 ```
 
 ## Safety notes
