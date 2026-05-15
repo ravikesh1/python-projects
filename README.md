@@ -82,6 +82,40 @@ Or run directly from a Git checkout without installing globally:
 uvx --from git+https://github.com/<you>/python-projects mcp-mysql-server
 ```
 
+## LangChain Tag System
+
+A second tool in this repo: a small LangChain/LangGraph-powered tagger.
+
+- `Tagger` — wraps a Claude model with `with_structured_output` and a Pydantic `Tags` schema (sentiment, language, aggressiveness, topics).
+- `tag_system.store` — JSON-backed store (`.tag_store.json` by default, override with `TAG_STORE_PATH`).
+- `tag_system.agent` — LangGraph ReAct agent exposing four tools: `tag_text`, `save_tagged`, `search_topic`, `list_all`. Orchestrate the workflow with a natural-language instruction.
+
+Set `ANTHROPIC_API_KEY` (and optionally `TAG_MODEL`) before running.
+
+```bash
+# One-shot structured tagging
+uv run tag-text "I absolutely loved the new release, it was a delight."
+
+# Agentic workflow — give it an instruction, it picks the tools
+uv run tag-agent "Tag and save this: I hate Mondays."
+uv run tag-agent "Show me everything tagged with 'release'."
+```
+
+Programmatic use:
+
+```python
+from tag_system import Tagger
+from tag_system.agent import build_agent
+from langchain_core.messages import HumanMessage
+
+tags = Tagger().tag("Es un día maravilloso.")
+print(tags.language, tags.sentiment, tags.topics)
+
+agent = build_agent()
+out = agent.invoke({"messages": [HumanMessage(content="tag and save: ship it")]})
+print(out["messages"][-1].content)
+```
+
 ## Safety notes
 
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
