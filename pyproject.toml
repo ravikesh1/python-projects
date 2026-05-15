@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 mcp-mysql-server = "mcp_mysql_server.server:main"
+mcp-mysql-sql = "mcp_mysql_server.sql_runner:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,0 +1,70 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SQL: apply schema",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "mcp-mysql-sql", "apply", "sql/schema"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "SQL: apply procedures",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "mcp-mysql-sql", "apply", "sql/procedures"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "SQL: apply all (schema + procedures)",
+      "dependsOrder": "sequence",
+      "dependsOn": ["SQL: apply schema", "SQL: apply procedures"],
+      "problemMatcher": []
+    },
+    {
+      "label": "SQL: list routines",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "mcp-mysql-sql", "list"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "SQL: call procedure",
+      "type": "shell",
+      "command": "uv",
+      "args": [
+        "run",
+        "mcp-mysql-sql",
+        "call",
+        "${input:procedureName}",
+        "${input:procedureArgs}"
+      ],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "SQL: apply current file",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "mcp-mysql-sql", "apply", "${file}"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "procedureName",
+      "type": "promptString",
+      "description": "Stored procedure to CALL (e.g. upsert_user)"
+    },
+    {
+      "id": "procedureArgs",
+      "type": "promptString",
+      "description": "Space-separated positional args (e.g. alice@example.com Alice 1)",
+      "default": ""
+    }
+  ]
+}

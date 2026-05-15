@@ -1,0 +1,58 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SQL runner: apply all",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "mcp_mysql_server.sql_runner",
+      "args": ["apply", "sql/schema", "sql/procedures"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "SQL runner: apply current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "mcp_mysql_server.sql_runner",
+      "args": ["apply", "${file}"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "SQL runner: call procedure",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "mcp_mysql_server.sql_runner",
+      "args": ["call", "${input:procedureName}", "${input:procedureArgs}"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "SQL runner: list routines",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "mcp_mysql_server.sql_runner",
+      "args": ["list"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "procedureName",
+      "type": "promptString",
+      "description": "Stored procedure to CALL"
+    },
+    {
+      "id": "procedureArgs",
+      "type": "promptString",
+      "description": "Positional args (single string, space-separated)",
+      "default": ""
+    }
+  ]
+}

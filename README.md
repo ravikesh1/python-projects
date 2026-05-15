@@ -82,6 +82,37 @@ Or run directly from a Git checkout without installing globally:
 uvx --from git+https://github.com/<you>/python-projects mcp-mysql-server
 ```
 
+## Stored procedures
+
+The `sql/` directory ships a sample `users` table and four CRUD procedures
+(`get_user_by_id`, `upsert_user`, `delete_user`, `list_users`). A small CLI is
+included to apply them and call them, driven by the same `MYSQL_*` env vars as
+the server:
+
+```bash
+uv run mcp-mysql-sql apply sql/schema sql/procedures
+uv run mcp-mysql-sql list
+uv run mcp-mysql-sql call upsert_user alice@example.com "Alice" 1
+uv run mcp-mysql-sql call get_user_by_id 1
+```
+
+The runner understands `DELIMITER` directives, so the `.sql` files can be edited
+and applied directly without preprocessing.
+
+### VSCode
+
+`.vscode/tasks.json` and `.vscode/launch.json` wrap the same CLI:
+
+- **Run Task → SQL: apply all** — applies schema then procedures.
+- **Run Task → SQL: apply current file** — applies the file in the active editor.
+- **Run Task → SQL: call procedure** — prompts for the name and args.
+- **Run Task → SQL: list routines** — lists procedures/functions in `MYSQL_DATABASE`.
+- **Run and Debug** panel offers the same actions under the Python debugger.
+
+Recommended extensions are listed in `.vscode/extensions.json` (SQLTools +
+MySQL driver for browsing the DB, Python + debugpy for stepping through the
+runner).
+
 ## Safety notes
 
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
