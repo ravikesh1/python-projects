@@ -1,0 +1,27 @@
+From: Uber Eats <receipts@uber.com>
+To: you@example.com
+Subject: Your order from Pizza Palace
+Date: Wed, 22 Jan 2025 19:45:00 -0500
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+<html>
+<body>
+<h1>Your order from Pizza Palace</h1>
+<p>Order ID: ABC123XYZ</p>
+<p>Thanks for your order!</p>
+
+<table>
+<tr><td>1 x Margherita Pizza</td><td>$14.00</td></tr>
+<tr><td>2 x Garlic Knots</td><td>$7.00</td></tr>
+<tr><td>1 x Tiramisu</td><td>$8.00</td></tr>
+</table>
+
+<p>Subtotal $29.00</p>
+<p>Tax $2.90</p>
+<p>Delivery Fee $2.99</p>
+<p>Service Fee $3.50</p>
+<p>Tip $5.00</p>
+<p>Total $43.39</p>
+</body>
+</html>

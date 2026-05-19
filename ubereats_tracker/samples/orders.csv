@@ -1,0 +1,11 @@
+external_id,restaurant,ordered_at,subtotal,tax,delivery_fee,service_fee,tip,discount,total,currency,status,cuisine,notes
+ORD-1001,Pizza Palace,2025-01-08T19:30:00,22.50,2.25,2.99,3.50,4.00,0,35.24,USD,delivered,Italian,
+ORD-1002,Sushi Spot,2025-01-12T20:15:00,38.00,3.80,4.99,5.00,7.00,0,58.79,USD,delivered,Japanese,
+ORD-1003,Pizza Palace,2025-01-20T18:45:00,18.50,1.85,2.99,3.00,3.00,0,29.34,USD,delivered,Italian,
+ORD-1004,Burger Barn,2025-02-03T12:10:00,15.00,1.50,2.49,2.50,2.50,0,23.99,USD,delivered,American,
+ORD-1005,Sushi Spot,2025-02-14T19:55:00,52.00,5.20,4.99,6.00,10.00,5.00,73.19,USD,delivered,Japanese,Valentine's dinner
+ORD-1006,Taco Town,2025-02-22T21:30:00,24.00,2.40,2.99,3.00,4.00,0,36.39,USD,delivered,Mexican,
+ORD-1007,Pizza Palace,2025-03-05T19:00:00,20.00,2.00,2.99,3.00,3.50,0,31.49,USD,delivered,Italian,
+ORD-1008,Burger Barn,2025-03-18T13:20:00,17.50,1.75,2.49,2.50,3.00,0,27.24,USD,delivered,American,
+ORD-1009,Thai Garden,2025-03-25T20:00:00,32.00,3.20,3.49,4.00,5.00,0,47.69,USD,delivered,Thai,
+ORD-1010,Sushi Spot,2025-04-02T19:45:00,45.00,4.50,4.99,5.50,8.00,0,67.99,USD,delivered,Japanese,

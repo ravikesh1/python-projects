@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uber Eats Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Uber Eats Tracker</h1>
+    <p class="muted">Personal spend dashboard</p>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi">
+      <div class="kpi-label">Orders</div>
+      <div class="kpi-value">{{ summary.order_count }}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Total spend</div>
+      <div class="kpi-value">${{ '%.2f' % (summary.total_cents / 100) }}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg order</div>
+      <div class="kpi-value">${{ '%.2f' % (summary.avg_order_cents / 100) }}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg tip</div>
+      <div class="kpi-value">{{ '%.1f' % summary.avg_tip_pct }}%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Fees paid</div>
+      <div class="kpi-value">${{ '%.2f' % (summary.fees_cents / 100) }}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Tax paid</div>
+      <div class="kpi-value">${{ '%.2f' % (summary.tax_cents / 100) }}</div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Spend by month</h2>
+      <canvas id="byMonth"></canvas>
+    </div>
+    <div class="card">
+      <h2>Spend by day of week</h2>
+      <canvas id="byDow"></canvas>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Top restaurants</h2>
+      <table>
+        <thead><tr><th>Restaurant</th><th>Orders</th><th>Spend</th></tr></thead>
+        <tbody>
+          {% for r in top_restaurants %}
+          <tr>
+            <td>{{ r.label }}</td>
+            <td>{{ r.order_count }}</td>
+            <td>${{ '%.2f' % (r.total_cents / 100) }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="muted">No data</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>Top items</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Qty</th><th>Spend</th></tr></thead>
+        <tbody>
+          {% for i in top_items %}
+          <tr>
+            <td>{{ i.label }}</td>
+            <td>{{ i.order_count }}</td>
+            <td>${{ '%.2f' % (i.total_cents / 100) }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="muted">No data</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Recent orders</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Restaurant</th><th>Status</th><th>Total</th><th>Tip %</th></tr></thead>
+      <tbody>
+        {% for o in recent_orders %}
+        <tr>
+          <td>{{ o.ordered_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ o.restaurant.name }}</td>
+          <td>{{ o.status }}</td>
+          <td>${{ '%.2f' % (o.total_cents / 100) }}</td>
+          <td>{{ '%.1f' % o.tip_pct }}%</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">Import some orders to get started.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    const byMonth = {{ by_month | tojson }};
+    new Chart(document.getElementById('byMonth'), {
+      type: 'bar',
+      data: {
+        labels: byMonth.map(b => b.label),
+        datasets: [{ label: 'Spend ($)', data: byMonth.map(b => b.total_cents / 100) }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    const byDow = {{ by_dow | tojson }};
+    new Chart(document.getElementById('byDow'), {
+      type: 'bar',
+      data: {
+        labels: byDow.map(b => b.label),
+        datasets: [{ label: 'Spend ($)', data: byDow.map(b => b.total_cents / 100) }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+  </script>
+</body>
+</html>

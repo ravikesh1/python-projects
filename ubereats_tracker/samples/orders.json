@@ -1,0 +1,41 @@
+[
+  {
+    "external_id": "ORD-2001",
+    "restaurant": "Ramen House",
+    "cuisine": "Japanese",
+    "ordered_at": "2025-04-10T19:30:00",
+    "currency": "USD",
+    "status": "delivered",
+    "amounts": {
+      "subtotal": 28.00,
+      "tax": 2.80,
+      "delivery_fee": 3.49,
+      "service_fee": 3.00,
+      "tip": 5.00,
+      "discount": 0,
+      "total": 42.29
+    },
+    "items": [
+      { "name": "Tonkotsu Ramen", "quantity": 2, "unit_price": 13.00, "total_price": 26.00 },
+      { "name": "Gyoza", "quantity": 1, "unit_price": 2.00, "total_price": 2.00 }
+    ]
+  },
+  {
+    "external_id": "ORD-2002",
+    "restaurant": "Pizza Palace",
+    "cuisine": "Italian",
+    "ordered_at": "2025-04-17T20:00:00",
+    "amounts": {
+      "subtotal": 21.00,
+      "tax": 2.10,
+      "delivery_fee": 2.99,
+      "service_fee": 3.00,
+      "tip": 4.00,
+      "total": 33.09
+    },
+    "items": [
+      { "name": "Margherita", "quantity": 1, "unit_price": 14.00 },
+      { "name": "Garlic Knots", "quantity": 1, "unit_price": 7.00 }
+    ]
+  }
+]
