@@ -1,0 +1,167 @@
+{
+  "name": "Crypto Prices -> MySQL (hourly)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "1a1f1d6a-0001-4a00-9000-000000000001",
+      "name": "Every hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/simple/price",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "ids",
+              "value": "bitcoin,ethereum,solana,cardano"
+            },
+            {
+              "name": "vs_currencies",
+              "value": "usd"
+            },
+            {
+              "name": "include_market_cap",
+              "value": "true"
+            },
+            {
+              "name": "include_24hr_vol",
+              "value": "true"
+            },
+            {
+              "name": "include_24hr_change",
+              "value": "true"
+            },
+            {
+              "name": "include_last_updated_at",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": false
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "1a1f1d6a-0001-4a00-9000-000000000002",
+      "name": "Fetch CoinGecko prices",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Flatten CoinGecko's { bitcoin: { usd: ... }, ... } shape into one item per coin.\nconst payload = $input.first().json;\nconst rows = [];\nfor (const [coin, data] of Object.entries(payload)) {\n  rows.push({\n    json: {\n      coin_id: coin,\n      price_usd: data.usd ?? null,\n      market_cap_usd: data.usd_market_cap ?? null,\n      volume_24h_usd: data.usd_24h_vol ?? null,\n      change_24h_pct: data.usd_24h_change ?? null,\n      source_updated_at: data.last_updated_at\n        ? new Date(data.last_updated_at * 1000).toISOString().slice(0, 19).replace('T', ' ')\n        : null,\n      fetched_at: new Date().toISOString().slice(0, 19).replace('T', ' '),\n    },\n  });\n}\nreturn rows;\n"
+      },
+      "id": "1a1f1d6a-0001-4a00-9000-000000000003",
+      "name": "Flatten to rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO crypto_prices\n  (coin_id, price_usd, market_cap_usd, volume_24h_usd, change_24h_pct, source_updated_at, fetched_at)\nVALUES\n  (?, ?, ?, ?, ?, ?, ?)\nON DUPLICATE KEY UPDATE\n  price_usd = VALUES(price_usd),\n  market_cap_usd = VALUES(market_cap_usd),\n  volume_24h_usd = VALUES(volume_24h_usd),\n  change_24h_pct = VALUES(change_24h_pct),\n  source_updated_at = VALUES(source_updated_at),\n  fetched_at = VALUES(fetched_at);",
+        "options": {
+          "queryReplacement": "={{ $json.coin_id }}, {{ $json.price_usd }}, {{ $json.market_cap_usd }}, {{ $json.volume_24h_usd }}, {{ $json.change_24h_pct }}, {{ $json.source_updated_at }}, {{ $json.fetched_at }}"
+        }
+      },
+      "id": "1a1f1d6a-0001-4a00-9000-000000000004",
+      "name": "Upsert into MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "REPLACE_WITH_MYSQL_CREDENTIAL_ID",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every hour": {
+      "main": [
+        [
+          {
+            "node": "Fetch CoinGecko prices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch CoinGecko prices": {
+      "main": [
+        [
+          {
+            "node": "Flatten to rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten to rows": {
+      "main": [
+        [
+          {
+            "node": "Upsert into MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "timezone": "UTC"
+  },
+  "active": false,
+  "pinData": {},
+  "tags": [
+    {
+      "name": "scheduled"
+    },
+    {
+      "name": "mysql"
+    }
+  ],
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
