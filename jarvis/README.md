@@ -4,21 +4,27 @@ An Iron Man-style AI assistant powered by the Claude API. Text-first CLI with an
 optional voice mode, a witty British-butler persona, and a handful of built-in
 tools.
 
+A general-purpose personal assistant: it chats, answers questions, and helps you
+stay organised — remembering you across sessions, managing your to-do list and
+notes, and reaching for tools (and optionally your database) when they help.
+
 ## Features
 
 - **Conversational brain** — Claude Opus 4.8 with a JARVIS persona, streaming
   replies token-by-token in the terminal.
-- **Tools** — JARVIS calls these on its own when they help:
+- **Remembers you across sessions** — durable memory of your name, preferences,
+  and context, plus a persistent to-do list and notes (`remember_fact`,
+  `forget_fact`, `add_task`, `list_tasks`, `complete_task`, `add_note`,
+  `list_notes`, `delete_note`). Stored locally under `~/.jarvis/`.
+- **Everyday tools** — JARVIS calls these on its own when they help:
   - `get_datetime` — current date/time, optionally in any IANA timezone
   - `calculate` — safe arithmetic (`+ - * / // % **` and parentheses)
   - `get_system_info` — OS, Python, CPU, memory, and disk of the host machine
   - `web_search` — Anthropic-hosted web search for current information
-- **Database access (optional)** — with `--mysql`, JARVIS can query your
-  databases through the bundled MCP MySQL server (`list_databases`,
-  `list_tables`, `describe_table`, `read_query`, and — if enabled —
-  `write_query`/`execute_ddl`).
-- **Voice mode (optional)** — talk to JARVIS and hear it reply.
-- **Multi-turn memory** — remembers the conversation within a session.
+- **Talk to it (voice mode)** — with `--voice`, speak to JARVIS and hear it
+  reply, in a continuous back-and-forth conversation.
+- **Database access (optional)** — with `--mysql`, JARVIS can also query your
+  databases through the bundled MCP MySQL server.
 
 ## Setup
 

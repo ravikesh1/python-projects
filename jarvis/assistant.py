@@ -8,6 +8,7 @@ from typing import Any, Callable
 import anthropic
 
 from .persona import JARVIS_PERSONA
+from .store import Store
 from .tools import ALL_TOOLS, execute_local_tool
 
 DEFAULT_MODEL = "claude-opus-4-8"
@@ -29,6 +30,7 @@ class Jarvis:
         effort: str = DEFAULT_EFFORT,
         max_tokens: int = DEFAULT_MAX_TOKENS,
         mcp_provider: Any | None = None,
+        store: Store | None = None,
     ) -> None:
         # The client resolves ANTHROPIC_API_KEY from the environment by default.
         self.client = client or anthropic.Anthropic()
@@ -38,17 +40,25 @@ class Jarvis:
         # Optional MCP tool provider (e.g. the MySQL server). Exposes
         # tool_specs() / handles(name) / call(name, input).
         self.mcp_provider = mcp_provider
+        # Persistent store for memories, tasks, and notes (cross-session state).
+        self.store = store if store is not None else Store()
         self.messages: list[dict[str, Any]] = []
 
         # System prompt is frozen (no volatile content), so cache it. The
         # breakpoint is harmless on short prompts and pays off as it grows.
-        self._system = [
+        self._system: list[dict[str, Any]] = [
             {
                 "type": "text",
                 "text": JARVIS_PERSONA,
                 "cache_control": {"type": "ephemeral"},
             }
         ]
+        # Append the user's saved facts / open tasks as a separate, uncached
+        # block after the cached persona — keeps the persona prefix stable while
+        # giving JARVIS continuity from the first message.
+        snapshot = self.store.context_snapshot()
+        if snapshot:
+            self._system.append({"type": "text", "text": snapshot})
 
     def ask(
         self,
@@ -124,7 +134,7 @@ class Jarvis:
                 if self.mcp_provider is not None and self.mcp_provider.handles(block.name):
                     output = self.mcp_provider.call(block.name, dict(block.input))
                 else:
-                    output = execute_local_tool(block.name, dict(block.input))
+                    output = execute_local_tool(block.name, dict(block.input), self.store)
                 results.append(
                     {
                         "type": "tool_result",
