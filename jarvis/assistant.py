@@ -28,12 +28,16 @@ class Jarvis:
         model: str = DEFAULT_MODEL,
         effort: str = DEFAULT_EFFORT,
         max_tokens: int = DEFAULT_MAX_TOKENS,
+        mcp_provider: Any | None = None,
     ) -> None:
         # The client resolves ANTHROPIC_API_KEY from the environment by default.
         self.client = client or anthropic.Anthropic()
         self.model = model
         self.effort = effort
         self.max_tokens = max_tokens
+        # Optional MCP tool provider (e.g. the MySQL server). Exposes
+        # tool_specs() / handles(name) / call(name, input).
+        self.mcp_provider = mcp_provider
         self.messages: list[dict[str, Any]] = []
 
         # System prompt is frozen (no volatile content), so cache it. The
@@ -61,13 +65,17 @@ class Jarvis:
         self.messages.append({"role": "user", "content": user_text})
         reply_parts: list[str] = []
 
+        tools = ALL_TOOLS
+        if self.mcp_provider is not None:
+            tools = ALL_TOOLS + self.mcp_provider.tool_specs()
+
         while True:
             with self.client.messages.stream(
                 model=self.model,
                 max_tokens=self.max_tokens,
                 system=self._system,
                 messages=self.messages,
-                tools=ALL_TOOLS,
+                tools=tools,
                 thinking={"type": "adaptive"},
                 output_config={"effort": self.effort},
             ) as stream:
@@ -81,7 +89,7 @@ class Jarvis:
             self.messages.append({"role": "assistant", "content": response.content})
 
             if response.stop_reason == "tool_use":
-                tool_results = self._run_local_tools(response.content, on_tool)
+                tool_results = self._run_tools(response.content, on_tool)
                 if tool_results:
                     self.messages.append({"role": "user", "content": tool_results})
                 continue
@@ -95,12 +103,17 @@ class Jarvis:
 
         return "".join(reply_parts).strip()
 
-    def _run_local_tools(
+    def _run_tools(
         self,
         content: list[Any],
         on_tool: Callable[[str], None] | None,
     ) -> list[dict[str, Any]]:
-        """Execute every local tool_use block; return tool_result blocks."""
+        """Execute every client-side tool_use block; return tool_result blocks.
+
+        Routes each call to a local handler or the MCP provider by tool name.
+        (Server-side tools like web_search execute on Anthropic's side and never
+        reach here.)
+        """
         results: list[dict[str, Any]] = []
         for block in content:
             if getattr(block, "type", None) != "tool_use":
@@ -108,7 +121,10 @@ class Jarvis:
             if on_tool is not None:
                 on_tool(block.name)
             try:
-                output = execute_local_tool(block.name, dict(block.input))
+                if self.mcp_provider is not None and self.mcp_provider.handles(block.name):
+                    output = self.mcp_provider.call(block.name, dict(block.input))
+                else:
+                    output = execute_local_tool(block.name, dict(block.input))
                 results.append(
                     {
                         "type": "tool_result",

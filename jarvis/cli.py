@@ -29,6 +29,14 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Send a single message, print the reply, and exit.",
     )
     parser.add_argument(
+        "--mysql",
+        action="store_true",
+        help=(
+            "Give JARVIS access to your databases via the bundled MCP MySQL "
+            "server (configure MYSQL_* in .env)."
+        ),
+    )
+    parser.add_argument(
         "--model",
         default=DEFAULT_MODEL,
         help=f"Claude model ID (default: {DEFAULT_MODEL}).",
@@ -42,9 +50,14 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _make_jarvis(args: argparse.Namespace) -> Jarvis:
+def _make_jarvis(args: argparse.Namespace, mcp_provider=None) -> Jarvis:
     client = make_default_client()
-    return Jarvis(client=client, model=args.model, effort=args.effort)
+    return Jarvis(
+        client=client,
+        model=args.model,
+        effort=args.effort,
+        mcp_provider=mcp_provider,
+    )
 
 
 def _run_once(jarvis: Jarvis, message: str) -> None:
@@ -113,10 +126,25 @@ def main(argv: list[str] | None = None) -> int:
     load_dotenv()
     args = _build_parser().parse_args(argv)
 
+    mcp_provider = None
+    if args.mysql:
+        try:
+            from .mcp_bridge import mysql_provider
+
+            print("Connecting to the MCP MySQL server…", file=sys.stderr)
+            mcp_provider = mysql_provider().start()
+            tools = ", ".join(t["name"] for t in mcp_provider.tool_specs())
+            print(f"Database tools available: {tools}", file=sys.stderr)
+        except Exception as exc:
+            print(f"Error: could not start the MySQL MCP server: {exc}", file=sys.stderr)
+            return 1
+
     try:
-        jarvis = _make_jarvis(args)
+        jarvis = _make_jarvis(args, mcp_provider=mcp_provider)
     except RuntimeError as exc:
         print(f"Error: {exc}", file=sys.stderr)
+        if mcp_provider is not None:
+            mcp_provider.close()
         return 1
 
     try:
@@ -129,6 +157,9 @@ def main(argv: list[str] | None = None) -> int:
     except RuntimeError as exc:  # e.g. voice extras missing
         print(f"Error: {exc}", file=sys.stderr)
         return 1
+    finally:
+        if mcp_provider is not None:
+            mcp_provider.close()
 
     return 0
 
