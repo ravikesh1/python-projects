@@ -87,3 +87,96 @@ uvx --from git+https://github.com/<you>/python-projects mcp-mysql-server
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
 - The server enforces statement type per tool (e.g. `read_query` rejects anything that isn't a read).
 - For production, give the MCP server a MySQL user with the minimum privileges you want it to have. The env flags are a convenience, not a security boundary.
+
+---
+
+# AI Knowledge Agent ("Batcomputer")
+
+A web-research knowledge system: it searches the web, ingests pages into a local
+knowledge base, and lets you query that knowledge to help you build things —
+like a personal Batcomputer. The knowledge core is shared and exposed two ways:
+
+- **MCP server** (`ai-knowledge-mcp`) — plug it into Claude Desktop / Claude
+  Code so Claude itself can search, ingest, and query the knowledge base. No
+  API key required.
+- **Standalone CLI agent** (`ai-knowledge-agent`) — a terminal REPL that runs
+  its own Claude-powered agent loop over the same tools. Requires
+  `ANTHROPIC_API_KEY`.
+
+## How it works
+
+- **Storage** — SQLite with FTS5 full-text search (falls back to `LIKE` if a
+  SQLite build lacks FTS5). Fully local, no extra services.
+- **Sources** — web pages and web search (DuckDuckGo, keyless). Pages are
+  fetched with `httpx` and reduced to clean article text with `trafilatura`.
+- **Retrieval** — keyword / full-text search ranked with BM25, returning
+  highlighted snippets.
+
+The core is source-agnostic, so adding arXiv, local PDFs, or manual notes later
+is a small addition — no schema changes.
+
+## Tools
+
+| Tool               | Description                                                     |
+| ------------------ | ------------------------------------------------------------- |
+| `web_search`       | Search the web; returns title/url/snippet (stores nothing).   |
+| `ingest_url`       | Fetch a URL, extract text, store it in the knowledge base.    |
+| `ingest_search`    | Search the web and ingest the top results.                    |
+| `search_knowledge` | Full-text search across stored documents.                     |
+| `get_document`     | Retrieve a stored document's full text by id.                 |
+| `list_documents`   | List recently ingested documents.                             |
+| `delete_document`  | Remove a document by id (MCP only).                           |
+| `knowledge_stats`  | Document count, total size, and backend info.                 |
+
+## Configuration
+
+All settings have defaults; override via `.env` or the environment:
+
+| Variable                       | Default                              | Description                                   |
+| ------------------------------ | ------------------------------------ | --------------------------------------------- |
+| `KNOWLEDGE_DB_PATH`            | `~/.ai_knowledge_agent/knowledge.db` | SQLite knowledge-base path                    |
+| `KNOWLEDGE_SEARCH_MAX_RESULTS` | `5`                                  | Default web/knowledge result count            |
+| `KNOWLEDGE_INGEST_MAX_CHARS`   | `50000`                              | Max characters stored per ingested page       |
+| `KNOWLEDGE_REQUEST_TIMEOUT`    | `30`                                 | HTTP fetch timeout (seconds)                  |
+| `KNOWLEDGE_MODEL`              | `claude-opus-4-8`                    | Claude model used by the CLI agent            |
+| `ANTHROPIC_API_KEY`            |                                      | Required by the CLI agent only                |
+
+## Running the CLI agent
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+uv run ai-knowledge-agent
+```
+
+Then ask research questions; the agent searches, ingests sources, and answers
+grounded in what it stored. Type `exit` to quit.
+
+## Running the MCP server
+
+```bash
+uv run ai-knowledge-mcp
+```
+
+It speaks MCP over stdio. Claude Desktop / Claude Code config:
+
+```json
+{
+  "mcpServers": {
+    "knowledge": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/python-projects",
+        "run",
+        "ai-knowledge-mcp"
+      ],
+      "env": {
+        "KNOWLEDGE_DB_PATH": "/absolute/path/to/knowledge.db"
+      }
+    }
+  }
+}
+```
+
+> Note: web search and page fetching require outbound internet access from
+> wherever the server/agent runs.
