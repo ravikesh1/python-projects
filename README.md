@@ -1,3 +1,10 @@
+# Python Projects
+
+This repo contains:
+
+- **[MCP MySQL Server](#mcp-mysql-server)** — a Model Context Protocol server for MySQL (below)
+- **[Slack Claude Agent](slack_claude_agent/README.md)** — an always-on Slack bot powered by Claude that you can DM or @mention. Run it with `uv run slack-claude-agent`; setup guide in [`slack_claude_agent/README.md`](slack_claude_agent/README.md).
+
 # MCP MySQL Server
 
 A Model Context Protocol (MCP) server that lets an MCP-compatible client (Claude Desktop, Claude Code, etc.) inspect and query a MySQL database.
