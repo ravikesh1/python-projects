@@ -1,3 +1,10 @@
+# Python Projects
+
+- **MCP MySQL Server** (`mcp_mysql_server/`) — MCP server for inspecting and querying MySQL databases. Documented below.
+- **file-formatter** (`file_formatter/`) — pluggable file formatter where you add your own formatting skills as plain Python files. See [file_formatter/README.md](file_formatter/README.md).
+
+---
+
 # MCP MySQL Server
 
 A Model Context Protocol (MCP) server that lets an MCP-compatible client (Claude Desktop, Claude Code, etc.) inspect and query a MySQL database.
