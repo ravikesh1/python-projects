@@ -1,3 +1,15 @@
+# python-projects
+
+Small Python projects, managed with [uv](https://docs.astral.sh/uv/):
+
+- **[Gas Tracker](gas_tracker/README.md)** – CLI that finds gas stations near a
+  location and ranks them cheapest-first, with a live watch mode
+  (`uv run gas-tracker "Austin, TX"`)
+- **MCP MySQL Server** – MCP server for inspecting and querying MySQL
+  (documented below)
+
+---
+
 # MCP MySQL Server
 
 A Model Context Protocol (MCP) server that lets an MCP-compatible client (Claude Desktop, Claude Code, etc.) inspect and query a MySQL database.
