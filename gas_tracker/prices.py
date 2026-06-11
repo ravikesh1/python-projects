@@ -1,11 +1,12 @@
 """Price sources and the logic that attaches a price to each station.
 
-There is no free official feed of per-station US gas prices (GasBuddy has no
-public API; OPIS-style feeds are paid). This module layers what *is* freely
-available:
+There is no free official feed of per-station gas prices in the US or Canada
+(GasBuddy has no public API; OPIS-style feeds are paid). This module layers
+what *is* freely available:
 
 1. Explicit OSM ``fuel:*:price`` tags on the station itself (rare, but exact).
-2. CollectAPI city/state averages as an area baseline (free tier, needs a key).
+2. CollectAPI area averages as a baseline (free tier, needs a key): city/state
+   averages in the US, city averages in Canada.
 
 Each quoted price carries its source so the table can show how trustworthy it
 is. A paid per-station feed can be added later as another provider.
@@ -19,6 +20,7 @@ from statistics import mean
 
 import requests
 
+from .geo import Place
 from .stations import Station
 
 COLLECTAPI_URL = "https://api.collectapi.com/gasPrice"
@@ -36,8 +38,8 @@ _COLLECTAPI_FIELDS = {
 
 @dataclass
 class Quote:
-    price: float  # $/gal
-    source: str  # "station (OSM)", "city avg", "state avg"
+    price: float  # $/gal (US) or $/L (Canada)
+    source: str  # "station (OSM)", "city avg", "area avg"
 
 
 class CollectApiProvider:
@@ -75,6 +77,49 @@ class CollectApiProvider:
                 cities[entry.get("name", "").strip().lower()] = prices
         return cities
 
+    def canada_city_prices(self, city: str, timeout: float = 20.0) -> dict[str, float]:
+        """Return {fuel kind -> CAD $/L} for a Canadian city."""
+        resp = requests.get(
+            f"{COLLECTAPI_URL}/canada",
+            params={"city": city.strip().lower()},
+            headers={
+                "authorization": f"apikey {self.api_key}",
+                "content-type": "application/json",
+            },
+            timeout=timeout,
+        )
+        resp.raise_for_status()
+        result = resp.json().get("result", {})
+        if isinstance(result, list):  # some plans return a list of city entries
+            wanted = city.strip().lower()
+            result = next(
+                (r for r in result if r.get("name", "").strip().lower() == wanted),
+                result[0] if result else {},
+            )
+        prices: dict[str, float] = {}
+        for fuel, api_field in _COLLECTAPI_FIELDS.items():
+            try:
+                price = float(result[api_field])
+            except (KeyError, TypeError, ValueError):
+                continue
+            # the feed sometimes reports cents/L (e.g. 162.9) instead of $/L
+            prices[fuel] = price / 100 if price > 10 else price
+        return prices
+
+
+def area_prices(provider: CollectApiProvider, place: Place) -> dict[str, dict[str, float]]:
+    """Fetch area baseline prices for a place: {city (lowercased) -> {fuel -> price}}."""
+    if not provider.available:
+        return {}
+    if place.country_code == "ca":
+        if not place.city:
+            return {}
+        prices = provider.canada_city_prices(place.city)
+        return {place.city.strip().lower(): prices} if prices else {}
+    if place.region_code:
+        return provider.state_prices(place.region_code)
+    return {}
+
 
 def quote_station(
     station: Station,
@@ -92,7 +137,7 @@ def quote_station(
             if price is not None:
                 return Quote(price, "city avg")
 
-    state_wide = [p[fuel] for p in city_prices.values() if fuel in p]
-    if state_wide:
-        return Quote(mean(state_wide), "state avg")
+    area_wide = [p[fuel] for p in city_prices.values() if fuel in p]
+    if area_wide:
+        return Quote(mean(area_wide), "area avg")
     return None

@@ -16,13 +16,17 @@ class GeocodeError(RuntimeError):
     """Raised when a location string cannot be resolved to coordinates."""
 
 
+KM_PER_MILE = 1.609344
+
+
 @dataclass
 class Place:
     lat: float
     lon: float
     display_name: str
     city: str | None = None
-    state_code: str | None = None  # two-letter US state code, if resolvable
+    region_code: str | None = None  # state/province code, e.g. "TX" or "BC"
+    country_code: str | None = None  # ISO 3166-1 alpha-2, e.g. "us", "ca"
 
 
 def geocode(query: str, timeout: float = 15.0) -> Place:
@@ -41,17 +45,18 @@ def geocode(query: str, timeout: float = 15.0) -> Place:
     address = hit.get("address", {})
 
     city = address.get("city") or address.get("town") or address.get("village")
-    state_code = None
-    iso = address.get("ISO3166-2-lvl4", "")  # e.g. "US-TX"
-    if iso.startswith("US-"):
-        state_code = iso[3:]
+    region_code = None
+    iso = address.get("ISO3166-2-lvl4", "")  # e.g. "US-TX", "CA-BC"
+    if "-" in iso:
+        region_code = iso.split("-", 1)[1]
 
     return Place(
         lat=float(hit["lat"]),
         lon=float(hit["lon"]),
         display_name=hit.get("display_name", query),
         city=city,
-        state_code=state_code,
+        region_code=region_code,
+        country_code=address.get("country_code"),
     )
 
 
