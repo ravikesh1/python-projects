@@ -35,9 +35,19 @@ Then in the desktop app: **Settings → Capabilities → Skills → Upload** and
 When you change the skill, re-run the build and re-upload — there is no automatic
 sync from the repo to the app.
 
-> Want a genuinely GitHub-linked, auto-updating install instead? That exists only
-> for **Claude Code** via a plugin marketplace (`/plugin marketplace add <repo>`),
-> not for the desktop chat app.
+### Install it in Claude Code (GitHub-linked, auto-updating)
+
+For **Claude Code** (CLI/IDE), this repo doubles as a plugin marketplace, so the
+same skill installs straight from GitHub and updates when you push:
+
+```text
+/plugin marketplace add ravikesh1/python-projects
+/plugin install mysql-explorer@ravikesh-python-projects
+```
+
+Refresh later with `/plugin marketplace update`. The marketplace and plugin
+manifests live in `.claude-plugin/`, and the plugin reuses the same
+`skills/mysql-explorer/` folder as the desktop zip — one source of truth for both.
 
 ## Installation
 

@@ -1,0 +1,10 @@
+{
+  "name": "mysql-explorer",
+  "description": "Guidance for safely inspecting and querying a MySQL database through the mcp-mysql-server MCP tools.",
+  "version": "0.1.0",
+  "author": {
+    "name": "ravikesh1"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ravikesh1/python-projects"
+}
