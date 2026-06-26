@@ -14,6 +14,21 @@ A Model Context Protocol (MCP) server that lets an MCP-compatible client (Claude
 
 Reads are capped at `MYSQL_ROW_LIMIT` rows (default 1000) and results are returned as JSON with a `truncated` flag.
 
+## Sample schema
+
+The `schema/` directory ships a small e-commerce demo schema
+(`users`, `products`, `orders`, `order_items`) so the server has something
+concrete to inspect and query. The column names line up with the example queries
+in the `mysql-explorer` skill, so those work as-is against this data.
+
+```bash
+mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p "$MYSQL_DATABASE" < schema/schema.sql
+mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p "$MYSQL_DATABASE" < schema/seed.sql   # optional sample rows
+```
+
+`schema.sql` uses `CREATE TABLE IF NOT EXISTS` (InnoDB, `utf8mb4`); `seed.sql`
+inserts a handful of rows with explicit ids for a fresh database.
+
 ## Skill: mysql-explorer
 
 This repo also ships a companion **Agent Skill** (`skills/mysql-explorer/`) that
