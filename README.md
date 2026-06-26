@@ -14,6 +14,41 @@ A Model Context Protocol (MCP) server that lets an MCP-compatible client (Claude
 
 Reads are capped at `MYSQL_ROW_LIMIT` rows (default 1000) and results are returned as JSON with a `truncated` flag.
 
+## Skill: mysql-explorer
+
+This repo also ships a companion **Agent Skill** (`skills/mysql-explorer/`) that
+teaches Claude how to drive the MCP tools above safely — discover schemas first,
+respect the row cap, and treat writes/DDL as deliberate, confirmed actions.
+
+### Publish it to the Claude desktop app
+
+The Claude desktop chat app installs skills by **uploading a `.zip`** — it does
+not connect to or auto-sync from GitHub. So the flow is build-then-upload:
+
+```bash
+bash skills/build.sh        # produces dist/mysql-explorer.zip
+```
+
+Then in the desktop app: **Settings → Capabilities → Skills → Upload** and select
+`dist/mysql-explorer.zip`. (Code Execution must be enabled.)
+
+When you change the skill, re-run the build and re-upload — there is no automatic
+sync from the repo to the app.
+
+### Install it in Claude Code (GitHub-linked, auto-updating)
+
+For **Claude Code** (CLI/IDE), this repo doubles as a plugin marketplace, so the
+same skill installs straight from GitHub and updates when you push:
+
+```text
+/plugin marketplace add ravikesh1/python-projects
+/plugin install mysql-explorer@ravikesh-python-projects
+```
+
+Refresh later with `/plugin marketplace update`. The marketplace and plugin
+manifests live in `.claude-plugin/`, and the plugin reuses the same
+`skills/mysql-explorer/` folder as the desktop zip — one source of truth for both.
+
 ## Installation
 
 This project uses [uv](https://docs.astral.sh/uv/) for environment and dependency management.
