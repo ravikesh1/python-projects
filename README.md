@@ -35,6 +35,9 @@ This repo also ships a companion **Agent Skill** (`skills/mysql-explorer/`) that
 teaches Claude how to drive the MCP tools above safely — discover schemas first,
 respect the row cap, and treat writes/DDL as deliberate, confirmed actions.
 
+> For the full step-by-step publish workflow (and the desktop vs. Claude Code
+> differences), see [PUBLISHING.md](PUBLISHING.md).
+
 ### Publish it to the Claude desktop app
 
 The Claude desktop chat app installs skills by **uploading a `.zip`** — it does
