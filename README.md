@@ -135,6 +135,19 @@ Or run directly from a Git checkout without installing globally:
 uvx --from git+https://github.com/<you>/python-projects mcp-mysql-server
 ```
 
+## Evals
+
+A deterministic eval suite drives this server as a real MCP client against a real
+(seeded) MySQL and scores every tool/resource. It's gated — it skips cleanly when
+MySQL is unavailable, so it's safe to run anywhere:
+
+```bash
+uv run mcp-mysql-evals
+```
+
+See [`evals/README.md`](evals/README.md) for what it checks and how to point it at
+a database.
+
 ## Safety notes
 
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
