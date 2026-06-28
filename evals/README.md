@@ -12,7 +12,7 @@ The suite is **gated**: if MySQL is unreachable it prints a message and exits 0
 
 | Category        | Examples |
 | --------------- | -------- |
-| `introspection` | `list_databases`, `list_tables`, `describe_table` return the seeded objects |
+| `schema_discovery` | `list_databases`, `list_tables`, `describe_table` return the seeded objects |
 | `read_query`    | `SELECT` values/counts, `WITH` (CTE) and `EXPLAIN` accepted |
 | `truncation`    | `MYSQL_ROW_LIMIT` truncates and sets `truncated: true` |
 | `safety`        | `read_query` rejects DML/DDL; `write_query`/`execute_ddl` disabled by default |

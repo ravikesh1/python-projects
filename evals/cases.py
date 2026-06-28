@@ -95,22 +95,22 @@ def build_cases(db: str) -> list[Case]:
     """Build the case list, binding resource URIs to the real eval DB name."""
 
     cases: list[Case] = [
-        # ---- introspection ------------------------------------------------ #
+        # ---- schema_discovery --------------------------------------------- #
         Case(
             name="list_databases includes eval DB",
-            category="introspection", group="default", kind="tool",
+            category="schema_discovery", group="default", kind="tool",
             tool="list_databases", args={},
             check=expect_json(values_contain(db), f"databases include {db}"),
         ),
         Case(
             name="list_tables returns users + orders",
-            category="introspection", group="default", kind="tool",
+            category="schema_discovery", group="default", kind="tool",
             tool="list_tables", args={},
             check=expect_json(values_contain("users", "orders"), "tables include users, orders"),
         ),
         Case(
             name="describe_table users has expected columns",
-            category="introspection", group="default", kind="tool",
+            category="schema_discovery", group="default", kind="tool",
             tool="describe_table", args={"table": "users"},
             check=expect_json(
                 values_contain("id", "name", "email", "created_at", "balance", "active"),
