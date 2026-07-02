@@ -9,3 +9,6 @@ build/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# local skill-usage dogfooding log (see .claude/hooks/log_skill_usage.py)
+.claude/skill-usage.log.jsonl

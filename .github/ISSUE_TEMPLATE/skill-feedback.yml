@@ -1,0 +1,62 @@
+name: mysql-explorer skill feedback
+description: Report unexpected behavior from the mysql-explorer skill (wrong trigger, bad guidance, unsafe query, etc.)
+title: "[mysql-explorer] "
+labels: ["skill-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! This helps improve the `mysql-explorer` skill.
+        Please don't paste real credentials, hostnames, or sensitive data — paraphrase if needed.
+
+  - type: textarea
+    id: what-you-asked
+    attributes:
+      label: What did you ask Claude to do?
+      description: Paste or paraphrase your prompt.
+      placeholder: 'e.g. "show me the 10 most recent orders"'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: triggered
+    attributes:
+      label: Did the mysql-explorer skill trigger?
+      options:
+        - "Yes, and it behaved correctly"
+        - "Yes, but it shouldn't have triggered"
+        - "No, it should have triggered but didn't"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-claude-did
+    attributes:
+      label: What did Claude actually do?
+      description: Tools/queries it ran, and the response it gave.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+
+  - type: input
+    id: surface
+    attributes:
+      label: Where were you running this?
+      placeholder: "Claude Code CLI / Claude Code IDE / Claude desktop app"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Skill version (if known)
+      description: Check `.claude-plugin/plugin.json` in your install, or ask "what version of mysql-explorer is installed?"
+    validations:
+      required: false
