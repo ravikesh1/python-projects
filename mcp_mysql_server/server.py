@@ -20,8 +20,9 @@ import logging
 import os
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 
 import pymysql
@@ -36,6 +37,60 @@ READ_ONLY_PREFIXES = ("select", "show", "describe", "desc", "explain", "with")
 WRITE_PREFIXES = ("insert", "update", "delete", "replace")
 DDL_PREFIXES = ("create", "alter", "drop", "truncate", "rename")
 
+# Single source of truth for each tool's declared arguments, shared by
+# list_tools() (advertised schema) and _extra_keys() (anomaly detection).
+TOOL_SCHEMAS: dict[str, dict[str, Any]] = {
+    "list_databases": {"type": "object", "properties": {}},
+    "list_tables": {
+        "type": "object",
+        "properties": {
+            "database": {
+                "type": "string",
+                "description": "Database name. Optional if MYSQL_DATABASE is set.",
+            },
+        },
+    },
+    "describe_table": {
+        "type": "object",
+        "properties": {
+            "table": {"type": "string", "description": "Table name."},
+            "database": {
+                "type": "string",
+                "description": "Database name. Optional if MYSQL_DATABASE is set.",
+            },
+        },
+        "required": ["table"],
+    },
+    "read_query": {
+        "type": "object",
+        "properties": {"sql": {"type": "string", "description": "Read-only SQL statement."}},
+        "required": ["sql"],
+    },
+    "write_query": {
+        "type": "object",
+        "properties": {"sql": {"type": "string", "description": "DML SQL statement."}},
+        "required": ["sql"],
+    },
+    "execute_ddl": {
+        "type": "object",
+        "properties": {"sql": {"type": "string", "description": "DDL SQL statement."}},
+        "required": ["sql"],
+    },
+}
+
+
+def _extra_keys(name: str, args: dict[str, Any]) -> list[str]:
+    """Argument keys present in ``args`` but not declared in the tool's schema.
+
+    Returns [] for unknown tool names -- _dispatch already raises its own
+    "Unknown tool" ValueError for those.
+    """
+    schema = TOOL_SCHEMAS.get(name)
+    if schema is None:
+        return []
+    allowed = set(schema.get("properties", {}))
+    return sorted(set(args) - allowed)
+
 
 @dataclass(frozen=True)
 class Config:
@@ -48,6 +103,8 @@ class Config:
     allow_write: bool
     allow_ddl: bool
     row_limit: int
+    audit_log: bool
+    audit_log_path: str
 
     @classmethod
     def from_env(cls) -> "Config":
@@ -61,6 +118,8 @@ class Config:
             allow_write=_envbool("MYSQL_ALLOW_WRITE", False),
             allow_ddl=_envbool("MYSQL_ALLOW_DDL", False),
             row_limit=int(os.getenv("MYSQL_ROW_LIMIT", "1000")),
+            audit_log=_envbool("MYSQL_AUDIT_LOG", False),
+            audit_log_path=os.getenv("MYSQL_AUDIT_LOG_PATH", "logs/mcp-mysql-audit.jsonl"),
         )
 
 
@@ -125,6 +184,48 @@ def _format_rows(rows: list[dict[str, Any]], row_limit: int) -> str:
     return json.dumps(payload, default=_json_default, indent=2)
 
 
+AUDIT_TRUNCATE_LEN = 500  # cap individual string field length in audit records
+
+
+def _audit_truncate(value: Any, limit: int = AUDIT_TRUNCATE_LEN) -> Any:
+    if isinstance(value, str) and len(value) > limit:
+        return value[:limit] + f"...(truncated, {len(value)} chars)"
+    if isinstance(value, dict):
+        return {k: _audit_truncate(v, limit) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_audit_truncate(v, limit) for v in value]
+    return value
+
+
+def _write_audit_record(
+    cfg: Config,
+    *,
+    name: str,
+    args: dict[str, Any],
+    outcome: str,
+    extra_keys: list[str],
+) -> None:
+    """Append one JSONL audit record. Must never raise -- a logging failure
+    must never break a real tool call."""
+    if not cfg.audit_log:
+        return
+    record = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "tool": name,
+        "arguments": _audit_truncate(args),
+        "outcome": outcome,
+        "anomalous": bool(extra_keys),
+        "extra_keys": extra_keys,
+    }
+    try:
+        path = Path(cfg.audit_log_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record, default=_json_default, ensure_ascii=False) + "\n")
+    except OSError:
+        logger.warning("Failed to write audit log entry for tool %s", name, exc_info=True)
+
+
 def build_server(cfg: Config) -> Server:
     server: Server = Server("mcp-mysql-server")
 
@@ -175,35 +276,17 @@ def build_server(cfg: Config) -> Server:
             Tool(
                 name="list_databases",
                 description="List all databases visible to the configured MySQL user.",
-                inputSchema={"type": "object", "properties": {}},
+                inputSchema=TOOL_SCHEMAS["list_databases"],
             ),
             Tool(
                 name="list_tables",
                 description="List tables in a database. Uses the configured database if 'database' is omitted.",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "database": {
-                            "type": "string",
-                            "description": "Database name. Optional if MYSQL_DATABASE is set.",
-                        }
-                    },
-                },
+                inputSchema=TOOL_SCHEMAS["list_tables"],
             ),
             Tool(
                 name="describe_table",
                 description="Return column definitions for a table.",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "table": {"type": "string", "description": "Table name."},
-                        "database": {
-                            "type": "string",
-                            "description": "Database name. Optional if MYSQL_DATABASE is set.",
-                        },
-                    },
-                    "required": ["table"],
-                },
+                inputSchema=TOOL_SCHEMAS["describe_table"],
             ),
             Tool(
                 name="read_query",
@@ -211,13 +294,7 @@ def build_server(cfg: Config) -> Server:
                     "Execute a read-only SQL query (SELECT / SHOW / DESCRIBE / EXPLAIN / WITH). "
                     f"Results are capped at {cfg.row_limit} rows."
                 ),
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "sql": {"type": "string", "description": "Read-only SQL statement."},
-                    },
-                    "required": ["sql"],
-                },
+                inputSchema=TOOL_SCHEMAS["read_query"],
             ),
         ]
         if cfg.allow_write:
@@ -225,13 +302,7 @@ def build_server(cfg: Config) -> Server:
                 Tool(
                     name="write_query",
                     description="Execute an INSERT / UPDATE / DELETE / REPLACE statement. Returns affected row count.",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "sql": {"type": "string", "description": "DML SQL statement."},
-                        },
-                        "required": ["sql"],
-                    },
+                    inputSchema=TOOL_SCHEMAS["write_query"],
                 )
             )
         if cfg.allow_ddl:
@@ -239,30 +310,32 @@ def build_server(cfg: Config) -> Server:
                 Tool(
                     name="execute_ddl",
                     description="Execute a DDL statement (CREATE / ALTER / DROP / TRUNCATE / RENAME).",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "sql": {"type": "string", "description": "DDL SQL statement."},
-                        },
-                        "required": ["sql"],
-                    },
+                    inputSchema=TOOL_SCHEMAS["execute_ddl"],
                 )
             )
         return tools
 
     @server.call_tool()
     async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
+        args = arguments or {}
+        extra_keys = _extra_keys(name, args)
+        if extra_keys:
+            logger.warning("Tool %s called with unexpected argument(s): %s", name, extra_keys)
+
+        outcome = "success"
         try:
-            text = _dispatch(name, arguments or {})
+            text = _dispatch(name, args)
         except PermissionError as exc:
-            text = f"Permission denied: {exc}"
+            outcome, text = "permission_denied", f"Permission denied: {exc}"
         except ValueError as exc:
-            text = f"Invalid request: {exc}"
+            outcome, text = "invalid_request", f"Invalid request: {exc}"
         except pymysql.MySQLError as exc:
-            text = f"MySQL error: {exc}"
+            outcome, text = "mysql_error", f"MySQL error: {exc}"
         except Exception as exc:  # noqa: BLE001
             logger.exception("Unexpected error handling tool %s", name)
-            text = f"Unexpected error: {exc}"
+            outcome, text = "unexpected_error", f"Unexpected error: {exc}"
+
+        _write_audit_record(cfg, name=name, args=args, outcome=outcome, extra_keys=extra_keys)
         return [TextContent(type="text", text=text)]
 
     def _dispatch(name: str, args: dict[str, Any]) -> str:

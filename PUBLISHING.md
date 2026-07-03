@@ -60,8 +60,10 @@ correlated against exactly what the skill said at the time.
      currently behaves for existing users (rare for a skill).
 3. Bump `version` in **both** `.claude-plugin/plugin.json` and the matching
    entry in `.claude-plugin/marketplace.json` — they must always match.
-4. Add an entry to `CHANGELOG.md` under a new `## [x.y.z] - YYYY-MM-DD`
-   heading describing what changed and why.
+4. Add an entry to `CHANGELOG.md` under a new `## mysql-explorer vX.Y.Z -
+   YYYY-MM-DD` heading describing what changed and why (each component in
+   this repo versions independently and gets its own tagged heading — see
+   the file's own preamble).
 5. Commit, push, and merge as usual.
 6. Tag the release: `git tag mysql-explorer-v0.2.0 && git push origin mysql-explorer-v0.2.0`
    (scoped tag name, so it won't collide if another skill/plugin is added to

@@ -21,6 +21,7 @@ The suite is **gated**: if MySQL is unreachable it prints a message and exits 0
 | `resources`     | `mysql://<db>/<table>/schema` lists and returns `CREATE TABLE` |
 | `serialization` | `DATE`/`DECIMAL`/`BLOB` come back as valid JSON (ISO date, decimal string, utf-8/hex bytes) |
 | `errors`        | invalid SQL → `MySQL error:`; unknown tool rejected |
+| `audit`         | unexpected extra argument keys never block the call, but are always flagged (`anomalous: true`) in the audit log when `MYSQL_AUDIT_LOG=true` |
 
 ## How it works
 
@@ -34,6 +35,7 @@ one server subprocess per group:
 | `limited` | `MYSQL_ROW_LIMIT=5` |
 | `write`   | `MYSQL_ALLOW_WRITE=true` |
 | `ddl`     | `MYSQL_ALLOW_DDL=true` |
+| `audit`   | `MYSQL_AUDIT_LOG=true`, `MYSQL_AUDIT_LOG_PATH` pointed at a temp file |
 
 Seeding and the connectivity gate talk to MySQL directly via PyMySQL (see
 `harness.py`); the eval cases only ever go through the MCP client session.

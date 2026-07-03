@@ -92,6 +92,8 @@ Copy `.env.example` to `.env` and fill it in, or export the variables in your sh
 | `MYSQL_ALLOW_WRITE`  | `false`     | Expose `write_query` tool                    |
 | `MYSQL_ALLOW_DDL`    | `false`     | Expose `execute_ddl` tool                    |
 | `MYSQL_ROW_LIMIT`    | `1000`      | Maximum rows returned per query              |
+| `MYSQL_AUDIT_LOG`    | `false`     | Append a JSONL audit record for every tool call |
+| `MYSQL_AUDIT_LOG_PATH` | `logs/mcp-mysql-audit.jsonl` | Path to the audit log file |
 | `LOG_LEVEL`          | `INFO`      | Python log level                             |
 
 ## Running
@@ -153,3 +155,24 @@ a database.
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
 - The server enforces statement type per tool (e.g. `read_query` rejects anything that isn't a read).
 - For production, give the MCP server a MySQL user with the minimum privileges you want it to have. The env flags are a convenience, not a security boundary.
+
+## Auditing & anomaly detection
+
+Every tool call is checked against its declared argument schema. A call with
+argument keys the tool doesn't declare (e.g. `read_query` called with an
+unexpected extra field) is never blocked — the call still runs exactly as it
+would otherwise — but it's always logged as a warning, and, when
+`MYSQL_AUDIT_LOG=true`, persisted with `anomalous: true`.
+
+When `MYSQL_AUDIT_LOG=true`, one JSON line is appended to `MYSQL_AUDIT_LOG_PATH`
+per tool call:
+
+```json
+{"timestamp": "2026-07-03T12:00:00+00:00", "tool": "read_query", "arguments": {"sql": "SELECT 1"}, "outcome": "success", "anomalous": false, "extra_keys": []}
+```
+
+`outcome` is one of `success`, `permission_denied`, `invalid_request`,
+`mysql_error`, `unexpected_error`. Long string arguments are truncated to 500
+characters. Logging is best-effort — a failure to write the audit log never
+blocks or fails the underlying tool call, and there's no rotation or external
+shipping; it's a local file for dogfooding/investigation.

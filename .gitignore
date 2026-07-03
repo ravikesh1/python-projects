@@ -12,3 +12,6 @@ build/
 
 # local skill-usage dogfooding log (see .claude/hooks/log_skill_usage.py)
 .claude/skill-usage.log.jsonl
+
+# local MCP server audit log (see mcp_mysql_server/server.py, MYSQL_AUDIT_LOG)
+logs/

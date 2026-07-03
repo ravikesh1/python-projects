@@ -15,8 +15,13 @@ summarizes a pass).
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from dataclasses import dataclass, field
 from typing import Any, Callable
+
+# Temp file backing the "audit" group's audit log for the duration of the run.
+_AUDIT_LOG_PATH = os.path.join(tempfile.mkdtemp(prefix="mcp-mysql-audit-"), "audit.jsonl")
 
 # Server config groups -> per-group env overrides for the server subprocess.
 GROUP_ENV: dict[str, dict[str, str]] = {
@@ -24,6 +29,7 @@ GROUP_ENV: dict[str, dict[str, str]] = {
     "limited": {"MYSQL_ROW_LIMIT": "5"},
     "write": {"MYSQL_ALLOW_WRITE": "true"},
     "ddl": {"MYSQL_ALLOW_DDL": "true"},
+    "audit": {"MYSQL_AUDIT_LOG": "true", "MYSQL_AUDIT_LOG_PATH": _AUDIT_LOG_PATH},
 }
 
 
@@ -82,6 +88,26 @@ def values_contain(*needles: str) -> Callable[[dict[str, Any]], bool]:
         vals = _all_values(_rows(payload))
         return all(any(n == v or n in v for v in vals) for n in needles)
     return predicate
+
+
+def expect_audit_anomaly(tool: str, extra_key: str) -> Callable[[Any], tuple[bool, str]]:
+    """Assert the last line of the audit log flags ``tool``/``extra_key`` as anomalous."""
+    def check(_text: Any) -> tuple[bool, str]:
+        try:
+            with open(_AUDIT_LOG_PATH, "r", encoding="utf-8") as fh:
+                lines = [ln for ln in fh if ln.strip()]
+        except OSError as exc:
+            return False, f"could not read audit log {_AUDIT_LOG_PATH}: {exc!r}"
+        if not lines:
+            return False, f"audit log {_AUDIT_LOG_PATH} is empty"
+        record = json.loads(lines[-1])
+        ok = (
+            record.get("tool") == tool
+            and record.get("anomalous") is True
+            and extra_key in record.get("extra_keys", [])
+        )
+        return ok, f"audit record: {record}" if ok else f"unexpected audit record: {record}"
+    return check
 
 
 # --------------------------------------------------------------------------- #
@@ -270,6 +296,20 @@ def build_cases(db: str) -> list[Case]:
             category="errors", group="default", kind="tool",
             tool="does_not_exist", args={},
             check=expect_error("Unknown tool"),
+        ),
+
+        # ---- audit / anomaly detection ------------------------------------ #
+        Case(
+            name="extra argument is ignored, call still succeeds",
+            category="audit", group="default", kind="tool",
+            tool="read_query", args={"sql": "SELECT COUNT(*) AS c FROM users", "unexpected_field": "evil"},
+            check=expect_json(lambda p: _rows(p)[0].get("c") == 22, "count(users) == 22 despite extra key"),
+        ),
+        Case(
+            name="extra argument is flagged in the audit log",
+            category="audit", group="audit", kind="tool",
+            tool="read_query", args={"sql": "SELECT 1", "unexpected_field": "evil"},
+            check=expect_audit_anomaly("read_query", "unexpected_field"),
         ),
     ]
     return cases
