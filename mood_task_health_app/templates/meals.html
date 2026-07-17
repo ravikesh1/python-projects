@@ -28,7 +28,8 @@
   async function generatePlan() {
     const data = await api('/api/meals/plan');
     const banner = document.getElementById('mood-banner');
-    banner.textContent = `Meal plan for mood: ${data.mood}`;
+    const vegLabel = data.vegetarian ? ' (Vegetarian - ' + data.day + ')' : ' (' + data.day + ')';
+    banner.textContent = `Meal plan for mood: ${data.mood}${vegLabel}`;
     banner.classList.remove('hidden');
 
     const plan = data.plan;

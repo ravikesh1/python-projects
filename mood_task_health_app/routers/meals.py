@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import desc
@@ -11,16 +12,29 @@ from ..models import MealPlanHistory, MoodEntry
 
 router = APIRouter(prefix="/api/meals", tags=["meals"])
 
+VEGETARIAN_DAYS = {0, 1, 4}  # Monday=0, Tuesday=1, Friday=4
+
 _meals_cache: dict | None = None
+_veg_meals_cache: dict | None = None
 
 
-def _load_meal_plans() -> dict:
-    global _meals_cache
+def _load_meal_plans(vegetarian: bool = False) -> dict:
+    global _meals_cache, _veg_meals_cache
+    if vegetarian:
+        if _veg_meals_cache is None:
+            path = os.path.join(os.path.dirname(__file__), "..", "data", "meal_plans_vegetarian.json")
+            with open(path) as f:
+                _veg_meals_cache = json.load(f)
+        return _veg_meals_cache
     if _meals_cache is None:
         path = os.path.join(os.path.dirname(__file__), "..", "data", "meal_plans.json")
         with open(path) as f:
             _meals_cache = json.load(f)
     return _meals_cache
+
+
+def _is_vegetarian_day() -> bool:
+    return datetime.now(timezone.utc).weekday() in VEGETARIAN_DAYS
 
 
 def _get_current_mood(db: Session) -> str:
@@ -29,7 +43,8 @@ def _get_current_mood(db: Session) -> str:
 
 
 def _generate_plan(mood: str) -> dict:
-    all_plans = _load_meal_plans()
+    vegetarian = _is_vegetarian_day()
+    all_plans = _load_meal_plans(vegetarian=vegetarian)
     mood_data = all_plans.get(mood, all_plans.get("Happy", {}))
 
     plan = {}
@@ -53,12 +68,14 @@ def _generate_plan(mood: str) -> dict:
 def get_meal_plan(db: Session = Depends(get_db)):
     mood = _get_current_mood(db)
     plan = _generate_plan(mood)
+    vegetarian = _is_vegetarian_day()
+    day_name = datetime.now(timezone.utc).strftime("%A")
 
     history_entry = MealPlanHistory(mood=mood, plan_json=json.dumps(plan))
     db.add(history_entry)
     db.commit()
 
-    return {"mood": mood, "plan": plan}
+    return {"mood": mood, "plan": plan, "vegetarian": vegetarian, "day": day_name}
 
 
 @router.get("/history")
