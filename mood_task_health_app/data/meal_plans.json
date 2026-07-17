@@ -1,0 +1,135 @@
+{
+  "Happy": {
+    "breakfast": [
+      {"name": "Greek yogurt parfait with granola and mixed berries", "tip": "Probiotics in yogurt support gut-brain connection, boosting mood further"},
+      {"name": "Whole grain pancakes with banana and honey", "tip": "Complex carbs provide steady serotonin production"}
+    ],
+    "lunch": [
+      {"name": "Mediterranean quinoa bowl with chickpeas and feta", "tip": "Chickpeas are rich in tryptophan, a serotonin precursor"},
+      {"name": "Grilled chicken wrap with avocado and veggies", "tip": "Avocado provides healthy fats that support brain function"}
+    ],
+    "dinner": [
+      {"name": "Baked salmon with roasted sweet potatoes and asparagus", "tip": "Omega-3s in salmon enhance dopamine and serotonin pathways"},
+      {"name": "Stir-fried tofu with colorful vegetables and brown rice", "tip": "Variety of colors means variety of antioxidants"}
+    ],
+    "snacks": [
+      {"name": "Trail mix with dark chocolate chips", "tip": "Dark chocolate triggers endorphin release"},
+      {"name": "Apple slices with almond butter", "tip": "The fiber-protein combo keeps energy stable"},
+      {"name": "Fresh fruit smoothie", "tip": "Natural sugars and vitamins maintain your positive state"}
+    ]
+  },
+  "Stressed": {
+    "breakfast": [
+      {"name": "Oatmeal with walnuts and blueberries", "tip": "Magnesium in walnuts helps reduce cortisol levels"},
+      {"name": "Spinach and mushroom egg scramble", "tip": "B vitamins in spinach help regulate stress hormones"}
+    ],
+    "lunch": [
+      {"name": "Salmon salad with leafy greens and olive oil", "tip": "Omega-3 fatty acids are powerful anti-inflammatories that combat stress"},
+      {"name": "Lentil soup with whole grain bread", "tip": "Lentils are rich in folate which helps produce mood-regulating neurotransmitters"}
+    ],
+    "dinner": [
+      {"name": "Turkey stir-fry with brown rice and broccoli", "tip": "Tryptophan in turkey supports serotonin production for calm"},
+      {"name": "Baked chicken with roasted root vegetables", "tip": "Root vegetables provide grounding complex carbs that stabilize blood sugar"}
+    ],
+    "snacks": [
+      {"name": "Dark chocolate (70%+) squares", "tip": "Flavonoids lower stress hormones and improve blood flow to the brain"},
+      {"name": "Chamomile tea with a handful of cashews", "tip": "Chamomile contains apigenin which binds to calming brain receptors"},
+      {"name": "Celery sticks with hummus", "tip": "The crunch is satisfying and chickpeas provide steady energy"}
+    ]
+  },
+  "Tired": {
+    "breakfast": [
+      {"name": "Eggs on whole grain toast with spinach", "tip": "Iron and B12 in eggs combat fatigue at the cellular level"},
+      {"name": "Overnight oats with chia seeds and banana", "tip": "Chia seeds provide sustained energy release over hours"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken salad with quinoa and beets", "tip": "Iron-rich beets increase oxygen delivery to muscles and brain"},
+      {"name": "Black bean and sweet potato burrito bowl", "tip": "Complex carbs + plant protein = steady energy without crashes"}
+    ],
+    "dinner": [
+      {"name": "Lean beef stir-fry with bell peppers and brown rice", "tip": "Beef is one of the richest sources of energizing B12 and iron"},
+      {"name": "Baked cod with lemon, quinoa, and steamed greens", "tip": "Cod provides lean protein and iodine which supports thyroid function"}
+    ],
+    "snacks": [
+      {"name": "Banana with a spoon of peanut butter", "tip": "Potassium in bananas helps convert blood sugar to energy"},
+      {"name": "Green tea", "tip": "L-theanine + caffeine provides alert calm without jitters"},
+      {"name": "Handful of almonds and dried apricots", "tip": "Iron in apricots and magnesium in almonds fight fatigue together"}
+    ]
+  },
+  "Focused": {
+    "breakfast": [
+      {"name": "Smoked salmon on whole grain toast with avocado", "tip": "Omega-3s and healthy fats fuel sustained concentration"},
+      {"name": "Berry smoothie bowl with walnuts and flax seeds", "tip": "Walnuts resemble tiny brains for a reason — they enhance cognitive function"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken with quinoa and roasted vegetables", "tip": "High-quality protein provides tyrosine for dopamine production"},
+      {"name": "Tuna poke bowl with edamame and brown rice", "tip": "DHA in tuna is the primary structural fat in the brain"}
+    ],
+    "dinner": [
+      {"name": "Herb-crusted salmon with sweet potato mash and greens", "tip": "This combination provides sustained fuel without energy dips"},
+      {"name": "Chicken and vegetable curry with basmati rice", "tip": "Turmeric in curry contains curcumin which enhances memory"}
+    ],
+    "snacks": [
+      {"name": "Blueberries and walnuts", "tip": "Blueberries are called brain berries — anthocyanins improve neural signaling"},
+      {"name": "Matcha latte with oat milk", "tip": "Sustained caffeine release keeps focus sharp without crashes"},
+      {"name": "Roasted chickpeas", "tip": "Crunchy protein-rich snack that won't cause a sugar spike"}
+    ]
+  },
+  "Anxious": {
+    "breakfast": [
+      {"name": "Warm oatmeal with pumpkin seeds and cinnamon", "tip": "Pumpkin seeds are rich in zinc, linked to lower anxiety levels"},
+      {"name": "Whole grain toast with almond butter and banana", "tip": "Complex carbs increase serotonin, your natural anxiety reliever"}
+    ],
+    "lunch": [
+      {"name": "Turkey and avocado sandwich on whole grain", "tip": "Turkey's tryptophan and avocado's B6 work together to calm nerves"},
+      {"name": "Miso soup with tofu, seaweed, and brown rice", "tip": "Fermented foods support gut bacteria that produce calming GABA"}
+    ],
+    "dinner": [
+      {"name": "Baked salmon with asparagus and wild rice", "tip": "Asparagus is rich in folate — low folate is linked to higher anxiety"},
+      {"name": "Chicken and vegetable stew with sweet potatoes", "tip": "Warm, comforting meals activate the parasympathetic nervous system"}
+    ],
+    "snacks": [
+      {"name": "Chamomile or lavender tea", "tip": "Both herbs have clinically demonstrated anti-anxiety effects"},
+      {"name": "Yogurt with a drizzle of honey", "tip": "Probiotics in yogurt influence the vagus nerve to reduce anxiety signals"},
+      {"name": "Orange slices", "tip": "Vitamin C has been shown to reduce cortisol and blood pressure"}
+    ]
+  },
+  "Energetic": {
+    "breakfast": [
+      {"name": "Protein-packed smoothie with spinach, protein powder, and berries", "tip": "High protein channels your energy into sustained productivity"},
+      {"name": "Egg white omelette with peppers, onions, and whole grain toast", "tip": "Lean protein and complex carbs prevent an energy crash later"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken power bowl with sweet potato, black beans, and salsa", "tip": "Balanced macros keep your energy high through the afternoon"},
+      {"name": "Sushi rolls with edamame and miso soup", "tip": "Fish and soy provide clean protein to sustain your energy peak"}
+    ],
+    "dinner": [
+      {"name": "Lean steak with roasted Brussels sprouts and quinoa", "tip": "Iron and protein in steak support your active metabolism"},
+      {"name": "Shrimp and vegetable pasta with olive oil and garlic", "tip": "Shrimp is low-calorie, high-protein — fuel without feeling heavy"}
+    ],
+    "snacks": [
+      {"name": "Protein bar or energy balls", "tip": "Quick protein hit sustains energy without a sugar crash"},
+      {"name": "Mixed nuts and dried fruit", "tip": "Healthy fats and natural sugars for sustained power"},
+      {"name": "Cottage cheese with pineapple", "tip": "Casein protein digests slowly, providing hours of fuel"}
+    ]
+  },
+  "Sad": {
+    "breakfast": [
+      {"name": "Whole grain waffles with berries and a drizzle of maple syrup", "tip": "A comforting breakfast with antioxidants that support brain chemistry"},
+      {"name": "Warm porridge with cinnamon, apple, and honey", "tip": "Warm foods feel nurturing and cinnamon regulates blood sugar"}
+    ],
+    "lunch": [
+      {"name": "Hearty chicken noodle soup", "tip": "Warm soups are genuinely comforting — studies show they improve emotional state"},
+      {"name": "Grilled cheese with tomato soup and a side salad", "tip": "Comfort food paired with nutrients — no guilt, just nourishment"}
+    ],
+    "dinner": [
+      {"name": "Baked mac and cheese with broccoli and grilled chicken", "tip": "Vitamin D in cheese and folate in broccoli both combat low mood"},
+      {"name": "Salmon with mashed sweet potatoes and green beans", "tip": "Omega-3s in salmon are clinically linked to reduced depressive symptoms"}
+    ],
+    "snacks": [
+      {"name": "Hot cocoa made with dark chocolate and milk", "tip": "Dark chocolate boosts endorphins and serotonin — real mood medicine"},
+      {"name": "Banana with dark chocolate chips", "tip": "Bananas contain vitamin B6 which helps produce feel-good neurotransmitters"},
+      {"name": "Warm herbal tea with a cookie", "tip": "Sometimes a small treat is exactly the self-compassion you need"}
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Meal Planner - MoodFlow{% endblock %}
+
+{% block content %}
+<h1>Daily Meal Planner</h1>
+<p class="subtitle">Your personalized meal plan based on your current mood, with nutritional tips.</p>
+
+<div id="mood-banner" class="mood-banner hidden"></div>
+
+<div style="margin-bottom: 20px;">
+  <button class="btn btn-primary" onclick="generatePlan()">Generate Meal Plan</button>
+</div>
+
+<div id="meal-plan">
+  <p class="empty-state">Click "Generate Meal Plan" to get your mood-matched meals for the day.</p>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+  <h2>Meal Plan History</h2>
+  <div id="meal-history">
+    <p class="loading">Loading...</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  async function generatePlan() {
+    const data = await api('/api/meals/plan');
+    const banner = document.getElementById('mood-banner');
+    banner.textContent = `Meal plan for mood: ${data.mood}`;
+    banner.classList.remove('hidden');
+
+    const plan = data.plan;
+    const container = document.getElementById('meal-plan');
+
+    let html = '';
+    const mealOrder = ['breakfast', 'lunch', 'dinner', 'snacks'];
+    const mealIcons = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snacks: 'Snacks' };
+
+    mealOrder.forEach(meal => {
+      const item = plan[meal];
+      if (!item) return;
+
+      if (Array.isArray(item)) {
+        html += `<div class="meal-card">
+          <h3>${mealIcons[meal]}</h3>`;
+        item.forEach(snack => {
+          html += `<div class="meal-name">${escHtml(snack.name)}</div>
+            <div class="meal-tip">${escHtml(snack.tip)}</div>
+            <div style="margin-bottom: 10px;"></div>`;
+        });
+        html += `</div>`;
+      } else {
+        html += `<div class="meal-card">
+          <h3>${mealIcons[meal]}</h3>
+          <div class="meal-name">${escHtml(item.name)}</div>
+          <div class="meal-tip">${escHtml(item.tip)}</div>
+        </div>`;
+      }
+    });
+
+    container.innerHTML = html;
+    loadHistory();
+  }
+
+  async function loadHistory() {
+    const entries = await api('/api/meals/history?limit=5');
+    const container = document.getElementById('meal-history');
+    if (!entries.length) {
+      container.innerHTML = '<p class="empty-state">No meal plans generated yet.</p>';
+      return;
+    }
+    container.innerHTML = entries.map(e => `
+      <div class="history-item">
+        <span>Mood: <strong>${e.mood}</strong></span>
+        <span>${new Date(e.created_at).toLocaleString()}</span>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  loadHistory();
+</script>
+{% endblock %}

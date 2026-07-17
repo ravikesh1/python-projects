@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Tasks - MoodFlow{% endblock %}
+
+{% block content %}
+<h1>Your Tasks</h1>
+<p class="subtitle">Tasks are automatically prioritized based on your current mood.</p>
+
+<div id="mood-banner" class="mood-banner hidden"></div>
+
+<div class="grid-2">
+  <div>
+    <div class="card">
+      <div class="form-toggle" onclick="toggleForm()">+ Add New Task</div>
+      <div id="task-form-container" class="collapsible">
+        <form id="task-form">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" required placeholder="What needs to be done?">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" rows="2" placeholder="Optional details..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category">
+                <option value="Deep Work">Deep Work</option>
+                <option value="Light Work" selected>Light Work</option>
+                <option value="Creative">Creative</option>
+                <option value="Administrative">Administrative</option>
+                <option value="Self-Care">Self-Care</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="priority">Priority (1-5)</label>
+              <input type="number" id="priority" min="1" max="5" value="3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="estimated_minutes">Estimated Minutes</label>
+            <input type="number" id="estimated_minutes" min="5" max="480" value="30">
+          </div>
+          <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Task List</h2>
+      <div id="task-list">
+        <p class="loading">Loading tasks...</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Mood-Based Suggestions</h2>
+      <div id="suggestions">
+        <p class="loading">Loading suggestions...</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function toggleForm() {
+    document.getElementById('task-form-container').classList.toggle('open');
+  }
+
+  async function loadTasks() {
+    const tasks = await api('/api/tasks');
+    const container = document.getElementById('task-list');
+    if (!tasks.length) {
+      container.innerHTML = '<p class="empty-state">No tasks yet. Add one above or pick a suggestion!</p>';
+      return;
+    }
+    container.innerHTML = tasks.map(t => `
+      <div class="task-item ${t.completed ? 'completed' : ''}" data-id="${t.id}">
+        <div class="task-info">
+          <div class="task-title">${escHtml(t.title)}</div>
+          <div class="task-meta">
+            <span class="category-badge">${t.category}</span>
+            Priority ${t.priority} &middot; ${t.estimated_minutes}min
+          </div>
+          ${t.description ? `<div class="task-meta">${escHtml(t.description)}</div>` : ''}
+        </div>
+        <div class="task-actions">
+          <button class="btn btn-sm btn-success" onclick="toggleComplete(${t.id}, ${!t.completed})">${t.completed ? 'Undo' : 'Done'}</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTask(${t.id})">Del</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadSuggestions() {
+    const data = await api('/api/tasks/suggestions');
+    const container = document.getElementById('suggestions');
+    const banner = document.getElementById('mood-banner');
+    banner.textContent = `Current Mood: ${data.mood}`;
+    banner.classList.remove('hidden');
+
+    if (!data.suggestions.length) {
+      container.innerHTML = '<p class="empty-state">No suggestions available.</p>';
+      return;
+    }
+    container.innerHTML = data.suggestions.map(s => `
+      <div class="suggestion-item">
+        <div class="suggestion-title">${escHtml(s.title)}</div>
+        <div class="suggestion-desc">${escHtml(s.description)}</div>
+        <div class="task-meta"><span class="category-badge">${s.category}</span> ${s.estimated_minutes}min</div>
+        <button class="btn btn-sm btn-outline" style="margin-top:6px" onclick='addSuggestion(${JSON.stringify(s).replace(/'/g, "&#39;")})'>Add to My Tasks</button>
+      </div>
+    `).join('');
+  }
+
+  async function addSuggestion(s) {
+    await api('/api/tasks', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: s.title,
+        description: s.description,
+        category: s.category,
+        estimated_minutes: s.estimated_minutes,
+        priority: 3,
+      }),
+    });
+    loadTasks();
+  }
+
+  document.getElementById('task-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await api('/api/tasks', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value || null,
+        category: document.getElementById('category').value,
+        priority: parseInt(document.getElementById('priority').value),
+        estimated_minutes: parseInt(document.getElementById('estimated_minutes').value),
+      }),
+    });
+    document.getElementById('task-form').reset();
+    document.getElementById('task-form-container').classList.remove('open');
+    loadTasks();
+  });
+
+  async function toggleComplete(id, completed) {
+    await api(`/api/tasks/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ completed }),
+    });
+    loadTasks();
+  }
+
+  async function deleteTask(id) {
+    if (!confirm('Delete this task?')) return;
+    await api(`/api/tasks/${id}`, { method: 'DELETE' });
+    loadTasks();
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  loadTasks();
+  loadSuggestions();
+</script>
+{% endblock %}

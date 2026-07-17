@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Mood Task & Health{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="logo">MoodFlow</a>
+      <ul class="nav-links">
+        <li><a href="/" id="nav-dashboard">Dashboard</a></li>
+        <li><a href="/tasks" id="nav-tasks">Tasks</a></li>
+        <li><a href="/meals" id="nav-meals">Meals</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <script>
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      if (a.getAttribute('href') === path) a.classList.add('active');
+    });
+
+    async function api(url, options = {}) {
+      const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
