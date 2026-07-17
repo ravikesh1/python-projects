@@ -1,0 +1,23 @@
+{
+  "skill_name": "notebook-guide",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm learning RAG and want a hands-on jupyter notebook that builds retrieval-augmented generation from scratch with numpy before using any framework. I know python and SQL well.",
+      "expected_output": "A runnable notebooks/NN_rag_*.ipynb following the standard structure: title with 3-5 objectives, uv-aware setup cell with env checks, 2-4 explain/run/vary concept sections, a live chunk-size pitfall demo, TODO exercises with collapsed solutions, and a recap.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "make me a langchain walkthrough notebook - LCEL basics, prompt | model | parser stuff. keep it cheap, I don't want to burn API credits running every cell",
+      "expected_output": "An LCEL notebook mapping abstractions to hand-built equivalents, with API-calling cells clearly marked and minimized, pinned/verified imports in setup, and exercises.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Here's my existing agents.ipynb - can you review it and restructure it so it's a proper learning notebook? It's just a wall of code cells right now.",
+      "expected_output": "A restructured notebook adding objectives, a proper setup cell, markdown why-explanations before code, a transparent tool-loop with printed iterations, a flailing-loop pitfall demo, and exercises - while preserving the original working code.",
+      "files": ["agents.ipynb"]
+    }
+  ]
+}
