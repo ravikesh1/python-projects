@@ -42,32 +42,38 @@ def _get_current_mood(db: Session) -> str:
     return entry.mood if entry else "Happy"
 
 
-def _generate_plan(mood: str) -> dict:
+def _generate_plan(mood: str) -> tuple[dict, dict | None]:
     vegetarian = _is_vegetarian_day()
     all_plans = _load_meal_plans(vegetarian=vegetarian)
     mood_data = all_plans.get(mood, all_plans.get("Happy", {}))
 
     plan = {}
+    total_calories = 0
     for meal_type in ["breakfast", "lunch", "dinner"]:
         options = mood_data.get(meal_type, [])
         if options:
             plan[meal_type] = random.choice(options)
         else:
-            plan[meal_type] = {"name": "Balanced meal", "tip": "Eat a variety of whole foods"}
+            plan[meal_type] = {"name": "Balanced meal", "calories": 400, "tip": "Eat a variety of whole foods"}
+        total_calories += plan[meal_type].get("calories", 0)
 
     snack_options = mood_data.get("snacks", [])
     if len(snack_options) >= 2:
         plan["snacks"] = random.sample(snack_options, 2)
     else:
         plan["snacks"] = snack_options
+    for s in plan["snacks"]:
+        total_calories += s.get("calories", 0)
 
-    return plan
+    plan["total_calories"] = total_calories
+    daily_target = mood_data.get("daily_target")
+    return plan, daily_target
 
 
 @router.get("/plan")
 def get_meal_plan(db: Session = Depends(get_db)):
     mood = _get_current_mood(db)
-    plan = _generate_plan(mood)
+    plan, daily_target = _generate_plan(mood)
     vegetarian = _is_vegetarian_day()
     day_name = datetime.now(timezone.utc).strftime("%A")
 
@@ -75,7 +81,13 @@ def get_meal_plan(db: Session = Depends(get_db)):
     db.add(history_entry)
     db.commit()
 
-    return {"mood": mood, "plan": plan, "vegetarian": vegetarian, "day": day_name}
+    return {
+        "mood": mood,
+        "plan": plan,
+        "daily_target": daily_target,
+        "vegetarian": vegetarian,
+        "day": day_name,
+    }
 
 
 @router.get("/history")

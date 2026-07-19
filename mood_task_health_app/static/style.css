@@ -420,3 +420,49 @@ input:focus, select:focus, textarea:focus {
 
 .collapsible { display: none; }
 .collapsible.open { display: block; }
+
+/* Calorie badges and banner */
+.cal-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #166534;
+  vertical-align: middle;
+}
+
+@media (prefers-color-scheme: dark) {
+  .cal-badge {
+    background: #14532d;
+    color: #86efac;
+  }
+}
+
+.calorie-banner {
+  background: #ecfdf5;
+  border: 2px solid var(--success);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #065f46;
+}
+
+@media (prefers-color-scheme: dark) {
+  .calorie-banner {
+    background: #064e3b;
+    color: #a7f3d0;
+  }
+}
+
+.calorie-banner.hidden { display: none; }
+
+/* PWA install prompt */
+body { -webkit-tap-highlight-color: transparent; }
+@supports (padding: env(safe-area-inset-bottom)) {
+  main { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
