@@ -1,0 +1,51 @@
+{
+  "Happy": [
+    {"title": "Tackle a creative project", "description": "Use your positive energy for brainstorming or design work", "category": "Creative", "estimated_minutes": 60},
+    {"title": "Mentor a colleague", "description": "Share your knowledge and help someone grow", "category": "Light Work", "estimated_minutes": 30},
+    {"title": "Plan upcoming goals", "description": "Channel optimism into strategic planning", "category": "Deep Work", "estimated_minutes": 45},
+    {"title": "Write documentation", "description": "Good mood makes tedious tasks easier", "category": "Administrative", "estimated_minutes": 30},
+    {"title": "Learn something new", "description": "Watch a tutorial or read an article in your field", "category": "Deep Work", "estimated_minutes": 40}
+  ],
+  "Stressed": [
+    {"title": "Take a 5-minute breathing exercise", "description": "Box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s", "category": "Self-Care", "estimated_minutes": 5},
+    {"title": "Organize your workspace", "description": "A tidy space reduces mental clutter", "category": "Light Work", "estimated_minutes": 15},
+    {"title": "Write down your worries", "description": "Brain dump everything on your mind to externalize stress", "category": "Self-Care", "estimated_minutes": 10},
+    {"title": "Do one small easy task", "description": "Complete something simple to build momentum", "category": "Light Work", "estimated_minutes": 10},
+    {"title": "Take a short walk", "description": "Step away from your desk for fresh air and movement", "category": "Self-Care", "estimated_minutes": 15}
+  ],
+  "Tired": [
+    {"title": "Review and respond to emails", "description": "Low-effort task that still moves things forward", "category": "Administrative", "estimated_minutes": 20},
+    {"title": "Take a power nap", "description": "A 20-minute nap can restore alertness", "category": "Self-Care", "estimated_minutes": 20},
+    {"title": "Do light filing or organizing", "description": "Sort documents, clean up folders", "category": "Administrative", "estimated_minutes": 15},
+    {"title": "Hydrate and have a healthy snack", "description": "Dehydration and low blood sugar worsen fatigue", "category": "Self-Care", "estimated_minutes": 10},
+    {"title": "Listen to an energizing podcast", "description": "Passive learning while your body recovers", "category": "Light Work", "estimated_minutes": 25}
+  ],
+  "Focused": [
+    {"title": "Deep work session", "description": "Block distractions and tackle your hardest problem", "category": "Deep Work", "estimated_minutes": 90},
+    {"title": "Write complex code or analysis", "description": "Use peak concentration for demanding cognitive tasks", "category": "Deep Work", "estimated_minutes": 60},
+    {"title": "Strategic planning", "description": "Map out project roadmaps or architecture decisions", "category": "Deep Work", "estimated_minutes": 45},
+    {"title": "Review pull requests thoroughly", "description": "Your sharp focus catches subtle issues", "category": "Deep Work", "estimated_minutes": 30},
+    {"title": "Create a presentation", "description": "Structure complex ideas into clear slides", "category": "Creative", "estimated_minutes": 45}
+  ],
+  "Anxious": [
+    {"title": "Grounding exercise (5-4-3-2-1)", "description": "Name 5 things you see, 4 you touch, 3 you hear, 2 you smell, 1 you taste", "category": "Self-Care", "estimated_minutes": 5},
+    {"title": "Break a big task into small steps", "description": "Overwhelm shrinks when tasks become bite-sized", "category": "Light Work", "estimated_minutes": 15},
+    {"title": "Tidy up your to-do list", "description": "Crossing off completed items builds a sense of control", "category": "Administrative", "estimated_minutes": 10},
+    {"title": "Stretch at your desk", "description": "Release physical tension with gentle stretches", "category": "Self-Care", "estimated_minutes": 10},
+    {"title": "Chat with a supportive colleague", "description": "Social connection helps ease anxious feelings", "category": "Self-Care", "estimated_minutes": 15}
+  ],
+  "Energetic": [
+    {"title": "Start a challenging new project", "description": "Channel your energy into ambitious work", "category": "Deep Work", "estimated_minutes": 90},
+    {"title": "Batch process administrative tasks", "description": "Knock out multiple small tasks in one go", "category": "Administrative", "estimated_minutes": 45},
+    {"title": "Brainstorm innovative solutions", "description": "High energy fuels creative thinking", "category": "Creative", "estimated_minutes": 40},
+    {"title": "Workout or active break", "description": "Physical activity to match your mental energy", "category": "Self-Care", "estimated_minutes": 30},
+    {"title": "Collaborate on a team project", "description": "Your enthusiasm is contagious — share it", "category": "Creative", "estimated_minutes": 60}
+  ],
+  "Sad": [
+    {"title": "Journal your feelings", "description": "Writing helps process emotions and gain clarity", "category": "Self-Care", "estimated_minutes": 15},
+    {"title": "Do a small act of kindness", "description": "Helping others can lift your own spirits", "category": "Self-Care", "estimated_minutes": 10},
+    {"title": "Listen to uplifting music", "description": "Music can gently shift your emotional state", "category": "Self-Care", "estimated_minutes": 15},
+    {"title": "Work on a comforting routine task", "description": "Familiar work provides structure and stability", "category": "Light Work", "estimated_minutes": 20},
+    {"title": "Sketch or doodle", "description": "Creative expression without pressure", "category": "Creative", "estimated_minutes": 20}
+  ]
+}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - MoodFlow{% endblock %}
+
+{% block content %}
+<h1>How are you feeling?</h1>
+<p class="subtitle">Select your mood or take a quick questionnaire to get personalized task and meal recommendations.</p>
+
+<div id="mood-banner" class="mood-banner hidden"></div>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Quick Select</h2>
+    <div class="mood-grid">
+      <button class="mood-btn" data-mood="Happy" onclick="selectMood('Happy')">Happy</button>
+      <button class="mood-btn" data-mood="Stressed" onclick="selectMood('Stressed')">Stressed</button>
+      <button class="mood-btn" data-mood="Tired" onclick="selectMood('Tired')">Tired</button>
+      <button class="mood-btn" data-mood="Focused" onclick="selectMood('Focused')">Focused</button>
+      <button class="mood-btn" data-mood="Anxious" onclick="selectMood('Anxious')">Anxious</button>
+      <button class="mood-btn" data-mood="Energetic" onclick="selectMood('Energetic')">Energetic</button>
+      <button class="mood-btn" data-mood="Sad" onclick="selectMood('Sad')">Sad</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Mood Questionnaire</h2>
+    <div id="questionnaire-container">
+      <p class="loading">Loading questions...</p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+  <h2>Recent Mood History</h2>
+  <div id="mood-history">
+    <p class="loading">Loading...</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let questions = [];
+
+  async function loadQuestions() {
+    questions = await api('/api/mood/questions');
+    const container = document.getElementById('questionnaire-container');
+    let html = '<form id="questionnaire-form">';
+    questions.forEach((q, i) => {
+      html += `<div class="question-group">
+        <label>${i + 1}. ${q.text}</label>
+        <div class="radio-group">`;
+      q.options.forEach((opt, j) => {
+        html += `<label><input type="radio" name="q${i}" value="${j}" ${j === 2 ? 'checked' : ''}> ${opt.label}</label>`;
+      });
+      html += `</div></div>`;
+    });
+    html += '<button type="submit" class="btn btn-primary">Analyze My Mood</button></form>';
+    container.innerHTML = html;
+
+    document.getElementById('questionnaire-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const answers = questions.map((_, i) => {
+        const checked = document.querySelector(`input[name="q${i}"]:checked`);
+        return checked ? parseInt(checked.value) : 2;
+      });
+      const result = await api('/api/mood/questionnaire', {
+        method: 'POST',
+        body: JSON.stringify({ answers }),
+      });
+      showMood(result.mood, 'questionnaire');
+    });
+  }
+
+  async function selectMood(mood) {
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+    const result = await api('/api/mood/manual', {
+      method: 'POST',
+      body: JSON.stringify({ mood }),
+    });
+    showMood(result.mood, 'manual');
+  }
+
+  function showMood(mood, source) {
+    const banner = document.getElementById('mood-banner');
+    banner.textContent = `Current Mood: ${mood} (via ${source})`;
+    banner.classList.remove('hidden');
+    loadHistory();
+  }
+
+  async function loadHistory() {
+    const entries = await api('/api/mood/history?limit=5');
+    const container = document.getElementById('mood-history');
+    if (!entries.length) {
+      container.innerHTML = '<p class="empty-state">No mood entries yet. Select your mood above!</p>';
+      return;
+    }
+    container.innerHTML = entries.map(e => `
+      <div class="history-item">
+        <span><strong>${e.mood}</strong> (${e.source})</span>
+        <span>${new Date(e.created_at).toLocaleString()}</span>
+      </div>
+    `).join('');
+  }
+
+  async function loadCurrentMood() {
+    const current = await api('/api/mood/current');
+    if (current) {
+      showMood(current.mood, current.source);
+      const btn = document.querySelector(`[data-mood="${current.mood}"]`);
+      if (btn) btn.classList.add('selected');
+    }
+  }
+
+  loadQuestions();
+  loadCurrentMood();
+  loadHistory();
+</script>
+{% endblock %}

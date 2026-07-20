@@ -1,0 +1,142 @@
+{
+  "Happy": {
+    "daily_target": {"calories": 1500, "note": "Happy days are great for sticking to your plan — ride the positive momentum"},
+    "breakfast": [
+      {"name": "Greek yogurt parfait with granola and mixed berries", "calories": 310, "tip": "Probiotics in yogurt support gut-brain connection, boosting mood further"},
+      {"name": "Two-egg veggie omelette with whole grain toast", "calories": 330, "tip": "High protein breakfast keeps you full longer and supports weight loss"}
+    ],
+    "lunch": [
+      {"name": "Mediterranean quinoa bowl with chickpeas and feta (1 cup)", "calories": 420, "tip": "Chickpeas are rich in tryptophan and fiber to keep you satisfied"},
+      {"name": "Grilled chicken lettuce wraps with avocado", "calories": 380, "tip": "Lettuce wraps save 150+ calories vs tortillas while keeping the flavor"}
+    ],
+    "dinner": [
+      {"name": "Baked salmon (150g) with roasted asparagus and small sweet potato", "calories": 430, "tip": "Omega-3s in salmon enhance dopamine pathways and support fat metabolism"},
+      {"name": "Stir-fried chicken with colorful vegetables over cauliflower rice", "calories": 350, "tip": "Cauliflower rice cuts 150 calories vs white rice with extra nutrients"}
+    ],
+    "snacks": [
+      {"name": "10 almonds with a dark chocolate square", "calories": 120, "tip": "Portion-controlled dark chocolate triggers endorphin release"},
+      {"name": "Apple slices with 1 tbsp almond butter", "calories": 130, "tip": "The fiber-protein combo keeps energy stable between meals"},
+      {"name": "Protein smoothie with spinach, berries, and water", "calories": 150, "tip": "Water-based smoothies save 100+ calories vs milk-based ones"}
+    ]
+  },
+  "Stressed": {
+    "daily_target": {"calories": 1450, "note": "Stress can trigger overeating — these meals are designed to keep you full and calm"},
+    "breakfast": [
+      {"name": "Oatmeal (1/2 cup dry) with walnuts (5 halves) and blueberries", "calories": 290, "tip": "Magnesium in walnuts helps reduce cortisol which drives belly fat storage"},
+      {"name": "Spinach and mushroom egg white scramble with toast", "calories": 270, "tip": "B vitamins in spinach help regulate stress hormones that trigger cravings"}
+    ],
+    "lunch": [
+      {"name": "Salmon salad (120g) with leafy greens and lemon vinaigrette", "calories": 380, "tip": "Omega-3s are anti-inflammatory and help reduce stress-related water retention"},
+      {"name": "Lentil soup (1.5 cups) with a small whole grain roll", "calories": 350, "tip": "Lentils are high in fiber and protein — incredibly filling for the calories"}
+    ],
+    "dinner": [
+      {"name": "Lean turkey stir-fry with broccoli and brown rice (1/2 cup)", "calories": 400, "tip": "Tryptophan in turkey supports serotonin — reducing stress-eating urges"},
+      {"name": "Baked chicken breast with roasted root vegetables", "calories": 420, "tip": "Root vegetables provide grounding complex carbs without excessive calories"}
+    ],
+    "snacks": [
+      {"name": "2 squares dark chocolate (70%+)", "calories": 90, "tip": "Flavonoids lower stress hormones — portion control is key for weight loss"},
+      {"name": "Chamomile tea with 10 cashews", "calories": 80, "tip": "Tea hydrates and cashews provide just enough fat to satisfy cravings"},
+      {"name": "Celery and cucumber sticks with 2 tbsp hummus", "calories": 70, "tip": "Crunchy low-cal snack that satisfies without derailing your goals"}
+    ]
+  },
+  "Tired": {
+    "daily_target": {"calories": 1400, "note": "When tired, your body craves quick calories — these meals provide energy without the excess"},
+    "breakfast": [
+      {"name": "2 boiled eggs on whole grain toast with spinach", "calories": 310, "tip": "Iron and B12 in eggs combat fatigue while protein keeps you full"},
+      {"name": "Overnight oats (1/2 cup) with chia seeds and half a banana", "calories": 300, "tip": "Chia seeds provide sustained energy and fiber for satiety"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken salad with quinoa (1/2 cup) and beets", "calories": 400, "tip": "Iron-rich beets increase oxygen delivery — energizing without excess calories"},
+      {"name": "Black bean and sweet potato bowl (small portion)", "calories": 380, "tip": "Complex carbs + plant protein = steady energy without crashes or overeating"}
+    ],
+    "dinner": [
+      {"name": "Lean beef stir-fry (120g) with bell peppers and cauliflower rice", "calories": 380, "tip": "Beef is rich in energizing B12 and iron; cauliflower rice saves calories"},
+      {"name": "Baked cod (150g) with lemon, quinoa (1/2 cup), and steamed greens", "calories": 370, "tip": "Cod is ultra-lean protein that supports thyroid function and metabolism"}
+    ],
+    "snacks": [
+      {"name": "Banana with 1 tsp peanut butter", "calories": 130, "tip": "Potassium in bananas helps convert blood sugar to energy"},
+      {"name": "Green tea (unsweetened)", "calories": 0, "tip": "L-theanine + caffeine provides alert calm; green tea also boosts metabolism"},
+      {"name": "8 almonds and 3 dried apricots", "calories": 110, "tip": "Iron in apricots and magnesium in almonds fight fatigue together"}
+    ]
+  },
+  "Focused": {
+    "daily_target": {"calories": 1500, "note": "Focused days are productive — fuel your brain well but keep portions controlled"},
+    "breakfast": [
+      {"name": "Smoked salmon (60g) on whole grain toast with 1/4 avocado", "calories": 320, "tip": "Omega-3s and healthy fats fuel sustained concentration without sugar crashes"},
+      {"name": "Berry protein smoothie bowl with walnuts and flax seeds", "calories": 330, "tip": "Walnuts enhance cognitive function and protein keeps you full through deep work"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken breast (150g) with quinoa and roasted vegetables", "calories": 430, "tip": "High-quality protein provides tyrosine for dopamine — focus fuel"},
+      {"name": "Tuna poke bowl (120g) with edamame and brown rice (1/2 cup)", "calories": 400, "tip": "DHA in tuna is the primary structural fat in the brain"}
+    ],
+    "dinner": [
+      {"name": "Herb-crusted salmon (150g) with sweet potato mash (small) and greens", "calories": 420, "tip": "This balanced combo provides sustained fuel without energy dips or excess"},
+      {"name": "Chicken and vegetable curry (light coconut milk) with rice (1/2 cup)", "calories": 430, "tip": "Turmeric contains curcumin which enhances memory and has anti-inflammatory benefits"}
+    ],
+    "snacks": [
+      {"name": "1/2 cup blueberries with 8 walnuts", "calories": 130, "tip": "Blueberries are brain berries — anthocyanins improve neural signaling"},
+      {"name": "Matcha latte with unsweetened oat milk", "calories": 60, "tip": "Sustained caffeine release keeps focus sharp and boosts metabolism"},
+      {"name": "Roasted chickpeas (1/4 cup)", "calories": 110, "tip": "Crunchy protein-rich snack that won't cause a sugar spike"}
+    ]
+  },
+  "Anxious": {
+    "daily_target": {"calories": 1400, "note": "Anxiety can trigger mindless snacking — these meals are calming and satisfying"},
+    "breakfast": [
+      {"name": "Warm oatmeal (1/2 cup dry) with pumpkin seeds and cinnamon", "calories": 280, "tip": "Pumpkin seeds are rich in zinc, linked to lower anxiety and better metabolism"},
+      {"name": "Whole grain toast with 1 tbsp almond butter and banana slices", "calories": 290, "tip": "Complex carbs increase serotonin, your natural anxiety reliever"}
+    ],
+    "lunch": [
+      {"name": "Turkey and avocado lettuce wraps", "calories": 340, "tip": "Turkey's tryptophan and avocado's B6 calm nerves; lettuce wraps save calories"},
+      {"name": "Miso soup with tofu, seaweed, and brown rice (1/2 cup)", "calories": 320, "tip": "Fermented foods support gut bacteria that produce calming GABA"}
+    ],
+    "dinner": [
+      {"name": "Baked salmon (150g) with asparagus and wild rice (1/2 cup)", "calories": 400, "tip": "Asparagus is rich in folate — low folate is linked to higher anxiety"},
+      {"name": "Chicken and vegetable stew with small sweet potato", "calories": 380, "tip": "Warm, comforting meals activate the parasympathetic nervous system"}
+    ],
+    "snacks": [
+      {"name": "Chamomile or lavender tea", "calories": 0, "tip": "Both herbs have clinically demonstrated anti-anxiety effects"},
+      {"name": "Plain yogurt (1/2 cup) with a drizzle of honey", "calories": 90, "tip": "Probiotics influence the vagus nerve to reduce anxiety signals"},
+      {"name": "1 orange", "calories": 60, "tip": "Vitamin C has been shown to reduce cortisol and blood pressure"}
+    ]
+  },
+  "Energetic": {
+    "daily_target": {"calories": 1550, "note": "High energy days burn more — you can afford slightly more fuel, but keep it clean"},
+    "breakfast": [
+      {"name": "Protein smoothie with spinach, protein powder, and berries (water base)", "calories": 280, "tip": "High protein channels your energy into sustained productivity"},
+      {"name": "Egg white omelette with peppers, onions, and whole grain toast", "calories": 290, "tip": "Lean protein and complex carbs prevent an energy crash later"}
+    ],
+    "lunch": [
+      {"name": "Grilled chicken power bowl with sweet potato, black beans, and salsa", "calories": 440, "tip": "Balanced macros keep your energy high — great day for a slightly larger lunch"},
+      {"name": "Sushi rolls (6 pieces) with edamame and miso soup", "calories": 420, "tip": "Fish and soy provide clean protein to sustain your energy peak"}
+    ],
+    "dinner": [
+      {"name": "Lean steak (120g) with roasted Brussels sprouts and quinoa (1/2 cup)", "calories": 430, "tip": "Iron and protein in steak support your active metabolism"},
+      {"name": "Grilled shrimp (150g) with zucchini noodles and garlic sauce", "calories": 320, "tip": "Shrimp is ultra-lean — fuel without the weight"}
+    ],
+    "snacks": [
+      {"name": "Protein ball (oats + PB + honey)", "calories": 120, "tip": "Quick protein hit sustains energy without a sugar crash"},
+      {"name": "Small handful of mixed nuts (15g)", "calories": 90, "tip": "Healthy fats for sustained power — portion control is key"},
+      {"name": "Cottage cheese (1/2 cup) with pineapple chunks", "calories": 110, "tip": "Casein protein digests slowly, providing hours of fuel"}
+    ]
+  },
+  "Sad": {
+    "daily_target": {"calories": 1400, "note": "Sad days make us reach for comfort food — these meals give comfort in weight-loss-friendly portions"},
+    "breakfast": [
+      {"name": "Whole grain waffle (1) with berries and light maple drizzle", "calories": 280, "tip": "One waffle satisfies without excess — antioxidants in berries support brain chemistry"},
+      {"name": "Warm porridge with cinnamon, half an apple, and honey", "calories": 270, "tip": "Warm foods feel nurturing and cinnamon regulates blood sugar and cravings"}
+    ],
+    "lunch": [
+      {"name": "Hearty chicken noodle soup (broth-based, 1.5 cups)", "calories": 320, "tip": "Broth-based soups are low calorie and genuinely comforting"},
+      {"name": "Small grilled cheese on whole grain with tomato soup (1 cup)", "calories": 380, "tip": "Comfort food — keep the cheese portion modest to stay on track"}
+    ],
+    "dinner": [
+      {"name": "Light mac and cheese (small) with broccoli and grilled chicken", "calories": 420, "tip": "Adding chicken and broccoli turns comfort food into a balanced meal"},
+      {"name": "Salmon (150g) with mashed sweet potato (small) and green beans", "calories": 410, "tip": "Omega-3s in salmon are clinically linked to reduced depressive symptoms"}
+    ],
+    "snacks": [
+      {"name": "Hot cocoa made with unsweetened cocoa and low-fat milk", "calories": 90, "tip": "Dark cocoa boosts endorphins — skip the sugar-loaded packets"},
+      {"name": "Half a banana with a few dark chocolate chips", "calories": 100, "tip": "Vitamin B6 in bananas helps produce feel-good neurotransmitters"},
+      {"name": "Warm herbal tea with 2 small cookies", "calories": 110, "tip": "A small treat is self-compassion — just keep portions mindful"}
+    ]
+  }
+}

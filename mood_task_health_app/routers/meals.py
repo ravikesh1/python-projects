@@ -1,0 +1,109 @@
+import json
+import os
+import random
+from datetime import datetime, timezone
+
+from fastapi import APIRouter, Depends
+from sqlalchemy import desc
+from sqlalchemy.orm import Session
+
+from ..database import get_db
+from ..models import MealPlanHistory, MoodEntry
+
+router = APIRouter(prefix="/api/meals", tags=["meals"])
+
+VEGETARIAN_DAYS = {0, 1, 4}  # Monday=0, Tuesday=1, Friday=4
+
+_meals_cache: dict | None = None
+_veg_meals_cache: dict | None = None
+
+
+def _load_meal_plans(vegetarian: bool = False) -> dict:
+    global _meals_cache, _veg_meals_cache
+    if vegetarian:
+        if _veg_meals_cache is None:
+            path = os.path.join(os.path.dirname(__file__), "..", "data", "meal_plans_vegetarian.json")
+            with open(path) as f:
+                _veg_meals_cache = json.load(f)
+        return _veg_meals_cache
+    if _meals_cache is None:
+        path = os.path.join(os.path.dirname(__file__), "..", "data", "meal_plans.json")
+        with open(path) as f:
+            _meals_cache = json.load(f)
+    return _meals_cache
+
+
+def _is_vegetarian_day() -> bool:
+    return datetime.now(timezone.utc).weekday() in VEGETARIAN_DAYS
+
+
+def _get_current_mood(db: Session) -> str:
+    entry = db.query(MoodEntry).order_by(desc(MoodEntry.created_at)).first()
+    return entry.mood if entry else "Happy"
+
+
+def _generate_plan(mood: str) -> tuple[dict, dict | None]:
+    vegetarian = _is_vegetarian_day()
+    all_plans = _load_meal_plans(vegetarian=vegetarian)
+    mood_data = all_plans.get(mood, all_plans.get("Happy", {}))
+
+    plan = {}
+    total_calories = 0
+    for meal_type in ["breakfast", "lunch", "dinner"]:
+        options = mood_data.get(meal_type, [])
+        if options:
+            plan[meal_type] = random.choice(options)
+        else:
+            plan[meal_type] = {"name": "Balanced meal", "calories": 400, "tip": "Eat a variety of whole foods"}
+        total_calories += plan[meal_type].get("calories", 0)
+
+    snack_options = mood_data.get("snacks", [])
+    if len(snack_options) >= 2:
+        plan["snacks"] = random.sample(snack_options, 2)
+    else:
+        plan["snacks"] = snack_options
+    for s in plan["snacks"]:
+        total_calories += s.get("calories", 0)
+
+    plan["total_calories"] = total_calories
+    daily_target = mood_data.get("daily_target")
+    return plan, daily_target
+
+
+@router.get("/plan")
+def get_meal_plan(db: Session = Depends(get_db)):
+    mood = _get_current_mood(db)
+    plan, daily_target = _generate_plan(mood)
+    vegetarian = _is_vegetarian_day()
+    day_name = datetime.now(timezone.utc).strftime("%A")
+
+    history_entry = MealPlanHistory(mood=mood, plan_json=json.dumps(plan))
+    db.add(history_entry)
+    db.commit()
+
+    return {
+        "mood": mood,
+        "plan": plan,
+        "daily_target": daily_target,
+        "vegetarian": vegetarian,
+        "day": day_name,
+    }
+
+
+@router.get("/history")
+def get_meal_history(limit: int = 10, db: Session = Depends(get_db)):
+    entries = (
+        db.query(MealPlanHistory)
+        .order_by(desc(MealPlanHistory.created_at))
+        .limit(limit)
+        .all()
+    )
+    return [
+        {
+            "id": e.id,
+            "mood": e.mood,
+            "plan": json.loads(e.plan_json),
+            "created_at": e.created_at.isoformat(),
+        }
+        for e in entries
+    ]
