@@ -15,3 +15,6 @@ build/
 
 # SQLite database files
 *.db
+
+# ChromaDB persistence
+chroma_data/
