@@ -15,3 +15,7 @@ build/
 
 # SQLite database files
 *.db
+
+# sklearn demo outputs
+ollama_fine_tune/sklearn_output/
+ollama_fine_tune/data/demo_*.csv
