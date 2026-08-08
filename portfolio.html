@@ -1,0 +1,771 @@
+<title>AI Engineering Portfolio — Project Reference</title>
+<style>
+  :root {
+    --surface: #F6F4F1;
+    --surface-card: #FFFFFF;
+    --surface-tag: #EDE9E3;
+    --text-primary: #1E2328;
+    --text-secondary: #5C6370;
+    --text-caption: #8B919A;
+    --accent: #C27534;
+    --accent-soft: rgba(194, 117, 52, 0.10);
+    --accent-blue: #2E6B9E;
+    --accent-blue-soft: rgba(46, 107, 158, 0.08);
+    --border: #DDD8D1;
+    --border-light: #EBE7E1;
+    --diagram-bg: #FAFAF8;
+    --diagram-stroke: #3A4048;
+    --diagram-fill: #F0EDE8;
+    --diagram-accent: #C27534;
+    --diagram-accent2: #2E6B9E;
+    --diagram-text: #2A2D32;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --surface: #13181E;
+      --surface-card: #1A2028;
+      --surface-tag: #242C36;
+      --text-primary: #E2E0DC;
+      --text-secondary: #9BA1AB;
+      --text-caption: #6B7280;
+      --accent: #D9944A;
+      --accent-soft: rgba(217, 148, 74, 0.12);
+      --accent-blue: #5BA0D4;
+      --accent-blue-soft: rgba(91, 160, 212, 0.10);
+      --border: #2A323C;
+      --border-light: #222A34;
+      --diagram-bg: #181F27;
+      --diagram-stroke: #B0B6BF;
+      --diagram-fill: #232B35;
+      --diagram-accent: #D9944A;
+      --diagram-accent2: #5BA0D4;
+      --diagram-text: #D4D2CE;
+    }
+  }
+  :root[data-theme="dark"] {
+    --surface: #13181E;
+    --surface-card: #1A2028;
+    --surface-tag: #242C36;
+    --text-primary: #E2E0DC;
+    --text-secondary: #9BA1AB;
+    --text-caption: #6B7280;
+    --accent: #D9944A;
+    --accent-soft: rgba(217, 148, 74, 0.12);
+    --accent-blue: #5BA0D4;
+    --accent-blue-soft: rgba(91, 160, 212, 0.10);
+    --border: #2A323C;
+    --border-light: #222A34;
+    --diagram-bg: #181F27;
+    --diagram-stroke: #B0B6BF;
+    --diagram-fill: #232B35;
+    --diagram-accent: #D9944A;
+    --diagram-accent2: #5BA0D4;
+    --diagram-text: #D4D2CE;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    line-height: 1.65;
+    margin: 0;
+    padding: 2rem 1.5rem 4rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  /* --- Header --- */
+  .header {
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .header-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 0.6rem;
+    text-wrap: balance;
+    color: var(--text-primary);
+  }
+  .header-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+  }
+  .header-meta {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.82rem;
+    color: var(--text-caption);
+  }
+  .header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* --- Project sections --- */
+  .project {
+    background: var(--surface-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 2rem 2rem 2.25rem;
+    margin-bottom: 2rem;
+  }
+  .project-number {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+  }
+  .project h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0 0 0.35rem;
+    text-wrap: balance;
+    color: var(--text-primary);
+  }
+  .project-tagline {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+
+  .project h3 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-caption);
+    margin: 1.5rem 0 0.6rem;
+  }
+  .project h3:first-of-type {
+    margin-top: 0;
+  }
+
+  .project p, .project li {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .project ul {
+    padding-left: 1.1rem;
+    margin: 0;
+  }
+  .project li {
+    margin-bottom: 0.3rem;
+  }
+  .project li::marker {
+    color: var(--accent);
+  }
+
+  /* Tech tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+  }
+  .tag {
+    font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    background: var(--surface-tag);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .tag.accent {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .tag.blue {
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+  }
+
+  /* Diagrams */
+  .diagram-wrap {
+    margin: 1rem 0 0.25rem;
+    overflow-x: auto;
+  }
+  .diagram-wrap figure {
+    margin: 0;
+  }
+  .diagram-wrap svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+  .diagram-wrap figcaption {
+    font-size: 0.78rem;
+    color: var(--text-caption);
+    text-align: center;
+    margin-top: 0.6rem;
+    font-style: italic;
+  }
+
+  /* Impact row */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .impact-item {
+    background: var(--surface-tag);
+    border-radius: 6px;
+    padding: 0.7rem 0.85rem;
+  }
+  .impact-value {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .impact-label {
+    font-size: 0.72rem;
+    color: var(--text-caption);
+    margin-top: 0.1rem;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 2px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-caption);
+    line-height: 1.7;
+  }
+  .footer strong {
+    color: var(--text-secondary);
+  }
+
+  /* Print */
+  @media print {
+    body { padding: 0; background: #fff; }
+    .project { break-inside: avoid; border: 1px solid #ddd; }
+    .page { max-width: none; }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 1.25rem 1rem 3rem; }
+    .project { padding: 1.5rem 1.25rem; }
+    .header h1 { font-size: 1.6rem; }
+    .project h2 { font-size: 1.25rem; }
+  }
+</style>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-eyebrow">Project Portfolio</div>
+    <h1>AI Engineering &amp; Consultation — Selected Work</h1>
+    <div class="header-subtitle">
+      Three projects demonstrating end-to-end AI system design: from RAG pipelines and LLM agent infrastructure to applied data engineering. Built with Python, LangGraph, MCP, FastAPI, and Claude.
+    </div>
+    <div class="header-meta">
+      <span>Python &middot; AI/ML &middot; LLM Agents</span>
+      <span>August 2026</span>
+    </div>
+  </header>
+
+  <!-- ================================================================== -->
+  <!-- Project 1: RAG Chatbot -->
+  <!-- ================================================================== -->
+  <section class="project">
+    <div class="project-number">Project 1</div>
+    <h2>RAG Chatbot — Document-Grounded Q&amp;A System</h2>
+    <p class="project-tagline">
+      A retrieval-augmented generation chatbot that lets users upload documents and ask questions, receiving answers grounded in those documents with inline source citations.
+    </p>
+
+    <h3>Technology Stack</h3>
+    <div class="tags">
+      <span class="tag accent">LangGraph</span>
+      <span class="tag accent">Claude API</span>
+      <span class="tag blue">ChromaDB</span>
+      <span class="tag blue">HuggingFace Embeddings</span>
+      <span class="tag">Streamlit</span>
+      <span class="tag">LangChain</span>
+      <span class="tag">Python asyncio</span>
+    </div>
+
+    <h3>Architecture Workflow</h3>
+    <div class="diagram-wrap">
+      <figure>
+        <svg viewBox="0 0 760 370" role="img" aria-label="RAG pipeline: documents are chunked and embedded into ChromaDB; user questions retrieve relevant chunks which are passed to Claude for grounded answer generation with citations.">
+          <defs>
+            <marker id="a1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-stroke)" />
+            </marker>
+            <marker id="a1-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-accent)" />
+            </marker>
+          </defs>
+
+          <!-- Ingestion pipeline (top) -->
+          <text x="380" y="22" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Ingestion Pipeline</text>
+
+          <rect x="20" y="38" width="120" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <text x="80" y="58" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-text)">User Uploads</text>
+          <text x="80" y="72" text-anchor="middle" font-size="9" fill="var(--text-caption)">PDF / TXT / MD</text>
+
+          <line x1="140" y1="62" x2="178" y2="62" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+
+          <rect x="180" y="38" width="130" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <text x="245" y="58" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-text)">Text Splitter</text>
+          <text x="245" y="72" text-anchor="middle" font-size="9" fill="var(--text-caption)">1000 chars / 150 overlap</text>
+
+          <line x1="310" y1="62" x2="348" y2="62" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+
+          <rect x="350" y="38" width="150" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.5"/>
+          <text x="425" y="58" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-accent)">HuggingFace</text>
+          <text x="425" y="72" text-anchor="middle" font-size="9" fill="var(--text-caption)">all-MiniLM-L6-v2</text>
+
+          <line x1="500" y1="62" x2="538" y2="62" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+
+          <rect x="540" y="38" width="130" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.5"/>
+          <text x="605" y="58" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-accent2)">ChromaDB</text>
+          <text x="605" y="72" text-anchor="middle" font-size="9" fill="var(--text-caption)">Persistent vector store</text>
+
+          <!-- Divider -->
+          <line x1="40" y1="110" x2="720" y2="110" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4,4"/>
+
+          <!-- Query pipeline (bottom) -->
+          <text x="380" y="138" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Query Pipeline — LangGraph Orchestration</text>
+
+          <rect x="20" y="156" width="120" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <text x="80" y="176" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-text)">User Question</text>
+          <text x="80" y="190" text-anchor="middle" font-size="9" fill="var(--text-caption)">+ chat history</text>
+
+          <line x1="140" y1="180" x2="178" y2="180" stroke="var(--diagram-accent)" stroke-width="1.5" marker-end="url(#a1-accent)"/>
+
+          <!-- LangGraph box -->
+          <rect x="180" y="148" width="500" height="66" rx="6" fill="none" stroke="var(--diagram-accent)" stroke-width="1.2" stroke-dasharray="6,3"/>
+          <text x="192" y="162" font-size="9" font-weight="600" fill="var(--diagram-accent)">LANGGRAPH</text>
+
+          <rect x="200" y="168" width="110" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.3"/>
+          <text x="255" y="185" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-accent2)">Retrieve</text>
+          <text x="255" y="198" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">top-4 chunks</text>
+
+          <line x1="310" y1="186" x2="348" y2="186" stroke="var(--diagram-accent)" stroke-width="1.3" marker-end="url(#a1-accent)"/>
+          <text x="329" y="180" text-anchor="middle" font-size="8" fill="var(--text-caption)">context</text>
+
+          <rect x="350" y="168" width="110" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.5"/>
+          <text x="405" y="185" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-accent)">Generate</text>
+          <text x="405" y="198" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">Claude Opus</text>
+
+          <line x1="460" y1="186" x2="498" y2="186" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+
+          <rect x="500" y="168" width="160" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <text x="580" y="185" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-text)">Streamed Answer</text>
+          <text x="580" y="198" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">with source citations</text>
+
+          <!-- Connection from ChromaDB to Retrieve -->
+          <line x1="605" y1="86" x2="605" y2="120" stroke="var(--diagram-accent2)" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <line x1="605" y1="120" x2="255" y2="120" stroke="var(--diagram-accent2)" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <line x1="255" y1="120" x2="255" y2="166" stroke="var(--diagram-accent2)" stroke-width="1.2" marker-end="url(#a1)"/>
+          <text x="430" y="132" text-anchor="middle" font-size="8.5" fill="var(--diagram-accent2)">similarity search</text>
+
+          <!-- Streamlit UI -->
+          <rect x="180" y="240" width="500" height="48" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <text x="430" y="260" text-anchor="middle" font-size="11" font-weight="600" fill="var(--diagram-text)">Streamlit Chat Interface</text>
+          <text x="430" y="274" text-anchor="middle" font-size="9" fill="var(--text-caption)">Document upload sidebar &middot; Streaming responses &middot; Source display &middot; Conversation memory</text>
+
+          <line x1="80" y1="204" x2="80" y2="264" stroke="var(--diagram-stroke)" stroke-width="1.2"/>
+          <line x1="80" y1="264" x2="178" y2="264" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+
+          <line x1="580" y1="204" x2="580" y2="238" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a1)"/>
+        </svg>
+        <figcaption>Two-stage RAG pipeline: offline document ingestion with local embeddings, and LangGraph-orchestrated query-time retrieval + generation.</figcaption>
+      </figure>
+    </div>
+
+    <h3>What I Built</h3>
+    <ul>
+      <li>Designed and implemented a complete RAG pipeline with LangGraph's <code>StateGraph</code> for orchestrating retrieve → generate flow</li>
+      <li>Used local HuggingFace sentence-transformers for embeddings — indexing and retrieval run fully offline with zero API cost</li>
+      <li>Persistent ChromaDB vector store survives restarts; supports PDF, TXT, and Markdown document ingestion</li>
+      <li>Streaming answer generation via Claude with inline source citations from retrieved passages</li>
+      <li>Built conversation memory (last 6 turns) for contextual follow-up questions</li>
+      <li>Provider-agnostic architecture — embeddings can be swapped to Voyage AI or OpenAI with a single function change</li>
+    </ul>
+
+    <h3>Key Metrics</h3>
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="impact-value">2-stage</div>
+        <div class="impact-label">LangGraph pipeline</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">Top-4</div>
+        <div class="impact-label">Chunks per retrieval</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">$0</div>
+        <div class="impact-label">Embedding cost (local)</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">3 formats</div>
+        <div class="impact-label">PDF / TXT / MD</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <!-- Project 2: MCP MySQL Server -->
+  <!-- ================================================================== -->
+  <section class="project">
+    <div class="project-number">Project 2</div>
+    <h2>MCP MySQL Server — AI Agent Database Infrastructure</h2>
+    <p class="project-tagline">
+      A Model Context Protocol server that gives AI agents (Claude Desktop, Claude Code) structured, safe access to MySQL databases — with a companion eval suite for deterministic validation.
+    </p>
+
+    <h3>Technology Stack</h3>
+    <div class="tags">
+      <span class="tag accent">MCP SDK</span>
+      <span class="tag accent">Claude Agents</span>
+      <span class="tag blue">PyMySQL</span>
+      <span class="tag blue">Python asyncio</span>
+      <span class="tag">SQLAlchemy</span>
+      <span class="tag">pytest</span>
+      <span class="tag">dotenv</span>
+    </div>
+
+    <h3>Architecture Workflow</h3>
+    <div class="diagram-wrap">
+      <figure>
+        <svg viewBox="0 0 760 380" role="img" aria-label="MCP MySQL Server architecture: Claude agent communicates via MCP stdio protocol to the server, which exposes 6 tools for safe database interaction, validated by a deterministic eval suite.">
+          <defs>
+            <marker id="a2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-stroke)" />
+            </marker>
+            <marker id="a2-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-accent)" />
+            </marker>
+            <marker id="a2-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-accent2)" />
+            </marker>
+          </defs>
+
+          <!-- Title -->
+          <text x="380" y="22" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Server Architecture</text>
+
+          <!-- Claude Agent -->
+          <rect x="20" y="44" width="140" height="56" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.5"/>
+          <text x="90" y="66" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--diagram-accent)">Claude Agent</text>
+          <text x="90" y="80" text-anchor="middle" font-size="9" fill="var(--text-caption)">Desktop / Code / API</text>
+
+          <!-- MCP Protocol arrow -->
+          <line x1="160" y1="72" x2="228" y2="72" stroke="var(--diagram-accent)" stroke-width="1.5" marker-end="url(#a2-acc)"/>
+          <text x="194" y="64" text-anchor="middle" font-size="8.5" font-weight="600" fill="var(--diagram-accent)">MCP stdio</text>
+
+          <!-- Server box -->
+          <rect x="230" y="36" width="310" height="144" rx="6" fill="none" stroke="var(--diagram-stroke)" stroke-width="1.3"/>
+          <text x="245" y="54" font-size="10" font-weight="700" fill="var(--diagram-text)">MCP MySQL Server</text>
+
+          <!-- Tools grid -->
+          <rect x="248" y="64" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="0.8"/>
+          <text x="313" y="81" text-anchor="middle" font-size="9.5" fill="var(--diagram-text)">list_databases</text>
+
+          <rect x="390" y="64" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="0.8"/>
+          <text x="455" y="81" text-anchor="middle" font-size="9.5" fill="var(--diagram-text)">list_tables</text>
+
+          <rect x="248" y="96" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="0.8"/>
+          <text x="313" y="113" text-anchor="middle" font-size="9.5" fill="var(--diagram-text)">describe_table</text>
+
+          <rect x="390" y="96" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.2"/>
+          <text x="455" y="113" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--diagram-accent2)">read_query</text>
+
+          <rect x="248" y="128" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.2"/>
+          <text x="313" y="145" text-anchor="middle" font-size="9.5" fill="var(--diagram-accent)">write_query</text>
+          <text x="313" y="155" text-anchor="middle" font-size="7" fill="var(--text-caption)">opt-in</text>
+
+          <rect x="390" y="128" width="130" height="26" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.2"/>
+          <text x="455" y="145" text-anchor="middle" font-size="9.5" fill="var(--diagram-accent)">execute_ddl</text>
+          <text x="455" y="155" text-anchor="middle" font-size="7" fill="var(--text-caption)">opt-in</text>
+
+          <!-- Safety layer label -->
+          <rect x="248" y="160" width="272" height="14" rx="2" fill="var(--accent-soft)"/>
+          <text x="384" y="171" text-anchor="middle" font-size="8" font-weight="600" fill="var(--diagram-accent)">SQL classification + row cap + type enforcement</text>
+
+          <!-- DB arrow -->
+          <line x1="540" y1="108" x2="588" y2="108" stroke="var(--diagram-stroke)" stroke-width="1.3" marker-end="url(#a2)"/>
+          <text x="564" y="100" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">PyMySQL</text>
+
+          <!-- MySQL DB -->
+          <rect x="590" y="64" width="140" height="90" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.5"/>
+          <text x="660" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="var(--diagram-accent2)">MySQL</text>
+          <text x="660" y="104" text-anchor="middle" font-size="9" fill="var(--text-caption)">databases, tables,</text>
+          <text x="660" y="116" text-anchor="middle" font-size="9" fill="var(--text-caption)">schemas, data</text>
+          <text x="660" y="140" text-anchor="middle" font-size="8.5" fill="var(--diagram-text)">Resources: CREATE TABLE</text>
+
+          <!-- Divider -->
+          <line x1="40" y1="208" x2="720" y2="208" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4,4"/>
+
+          <!-- Eval Suite section -->
+          <text x="380" y="234" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Eval Suite — Deterministic Validation</text>
+
+          <rect x="40" y="252" width="120" height="40" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1"/>
+          <text x="100" y="270" text-anchor="middle" font-size="10" font-weight="600" fill="var(--diagram-text)">Test Cases</text>
+          <text x="100" y="282" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">~20 declarative</text>
+
+          <line x1="160" y1="272" x2="188" y2="272" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a2)"/>
+
+          <rect x="190" y="252" width="120" height="40" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.3"/>
+          <text x="250" y="270" text-anchor="middle" font-size="10" font-weight="600" fill="var(--diagram-accent)">MCP Client</text>
+          <text x="250" y="282" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">drives server via stdio</text>
+
+          <line x1="310" y1="272" x2="338" y2="272" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a2)"/>
+
+          <rect x="340" y="252" width="120" height="40" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1"/>
+          <text x="400" y="270" text-anchor="middle" font-size="10" font-weight="600" fill="var(--diagram-text)">Server Process</text>
+          <text x="400" y="282" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">per config group</text>
+
+          <line x1="460" y1="272" x2="488" y2="272" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a2)"/>
+
+          <rect x="490" y="252" width="90" height="40" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.3"/>
+          <text x="535" y="270" text-anchor="middle" font-size="10" font-weight="600" fill="var(--diagram-accent2)">MySQL</text>
+          <text x="535" y="282" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">seeded data</text>
+
+          <line x1="580" y1="272" x2="608" y2="272" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a2)"/>
+
+          <rect x="610" y="252" width="110" height="40" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1"/>
+          <text x="665" y="270" text-anchor="middle" font-size="10" font-weight="600" fill="var(--diagram-text)">Scorers</text>
+          <text x="665" y="282" text-anchor="middle" font-size="8.5" fill="var(--text-caption)">expect_json, errors</text>
+
+          <!-- Categories -->
+          <text x="380" y="316" text-anchor="middle" font-size="9" fill="var(--text-caption)">Coverage: schema discovery &middot; read queries &middot; truncation &middot; safety boundaries &middot; writes &middot; DDL &middot; resources &middot; serialization &middot; errors</text>
+        </svg>
+        <figcaption>MCP server exposes 6 tools with safety-first defaults; the eval suite drives the server end-to-end via a real MCP client session.</figcaption>
+      </figure>
+    </div>
+
+    <h3>What I Built</h3>
+    <ul>
+      <li>Built a production MCP server exposing 6 tools for database interaction — reads enabled by default, writes and DDL explicitly opt-in via environment flags</li>
+      <li>Implemented SQL statement classification that rejects mismatched operations (read_query won't accept INSERT, write_query won't accept DDL)</li>
+      <li>Built a companion deterministic eval suite that launches the server as a subprocess, drives it through real MCP client sessions, and validates across 9 test categories</li>
+      <li>Designed composable scorer functions (<code>expect_json</code>, <code>expect_error</code>, <code>values_contain</code>) for declarative test case definitions</li>
+      <li>Published as both a Claude Desktop skill (zip upload) and a Claude Code plugin (GitHub-linked, auto-updating)</li>
+    </ul>
+
+    <h3>Key Metrics</h3>
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="impact-value">6 tools</div>
+        <div class="impact-label">MCP-exposed operations</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">23/23</div>
+        <div class="impact-label">Eval pass rate</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">9 categories</div>
+        <div class="impact-label">Test coverage areas</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">Read-only</div>
+        <div class="impact-label">Default safety mode</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================== -->
+  <!-- Project 3: Uber Eats Tracker -->
+  <!-- ================================================================== -->
+  <section class="project">
+    <div class="project-number">Project 3</div>
+    <h2>Uber Eats Tracker — Personal Spend Analytics Platform</h2>
+    <p class="project-tagline">
+      A data engineering project that imports Uber Eats order data from multiple sources (CSV, JSON, receipt emails), stores it in a normalized database, and surfaces spending analytics through a web dashboard and CLI.
+    </p>
+
+    <h3>Technology Stack</h3>
+    <div class="tags">
+      <span class="tag accent">FastAPI</span>
+      <span class="tag accent">SQLAlchemy 2.0</span>
+      <span class="tag blue">Chart.js</span>
+      <span class="tag">Typer CLI</span>
+      <span class="tag">PyMySQL</span>
+      <span class="tag">IMAP / email parsing</span>
+      <span class="tag">pytest</span>
+    </div>
+
+    <h3>Architecture Workflow</h3>
+    <div class="diagram-wrap">
+      <figure>
+        <svg viewBox="0 0 760 360" role="img" aria-label="Uber Eats Tracker data pipeline: three importers (CSV, JSON, email) normalize data into SQLAlchemy models in SQLite/PostgreSQL; analytics engine computes summaries surfaced in a FastAPI dashboard and CLI.">
+          <defs>
+            <marker id="a3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-stroke)" />
+            </marker>
+            <marker id="a3-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="var(--diagram-accent)" />
+            </marker>
+          </defs>
+
+          <!-- Data Sources -->
+          <text x="85" y="22" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Data Sources</text>
+
+          <rect x="20" y="38" width="130" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.1"/>
+          <text x="85" y="60" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-text)">CSV Export</text>
+
+          <rect x="20" y="84" width="130" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.1"/>
+          <text x="85" y="106" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-text)">JSON Export</text>
+
+          <rect x="20" y="130" width="130" height="36" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.3"/>
+          <text x="85" y="152" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-accent)">Gmail Receipts</text>
+
+          <!-- Arrows to importers -->
+          <line x1="150" y1="56" x2="198" y2="80" stroke="var(--diagram-stroke)" stroke-width="1.1" marker-end="url(#a3)"/>
+          <line x1="150" y1="102" x2="198" y2="100" stroke="var(--diagram-stroke)" stroke-width="1.1" marker-end="url(#a3)"/>
+          <line x1="150" y1="148" x2="198" y2="120" stroke="var(--diagram-accent)" stroke-width="1.1" marker-end="url(#a3-acc)"/>
+
+          <!-- Importers box -->
+          <rect x="200" y="44" width="160" height="120" rx="5" fill="none" stroke="var(--diagram-stroke)" stroke-width="1.2" stroke-dasharray="6,3"/>
+          <text x="215" y="60" font-size="9" font-weight="700" fill="var(--diagram-text)">IMPORTERS</text>
+
+          <rect x="216" y="68" width="128" height="24" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="0.8"/>
+          <text x="280" y="84" text-anchor="middle" font-size="9" fill="var(--diagram-text)">csv_importer</text>
+
+          <rect x="216" y="96" width="128" height="24" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="0.8"/>
+          <text x="280" y="112" text-anchor="middle" font-size="9" fill="var(--diagram-text)">json_importer</text>
+
+          <rect x="216" y="124" width="128" height="24" rx="3" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.1"/>
+          <text x="280" y="140" text-anchor="middle" font-size="9" fill="var(--diagram-accent)">email_importer</text>
+
+          <!-- Normalize label -->
+          <line x1="360" y1="104" x2="408" y2="104" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a3)"/>
+          <text x="384" y="96" text-anchor="middle" font-size="8" fill="var(--text-caption)">normalize</text>
+
+          <!-- ORM Models -->
+          <rect x="410" y="52" width="140" height="106" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.4"/>
+          <text x="480" y="72" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--diagram-accent2)">SQLAlchemy ORM</text>
+          <text x="480" y="90" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Restaurant</text>
+          <text x="480" y="104" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Order (cents precision)</text>
+          <text x="480" y="118" text-anchor="middle" font-size="9" fill="var(--diagram-text)">OrderItem</text>
+          <text x="480" y="138" text-anchor="middle" font-size="8" fill="var(--text-caption)">dedup by external_id</text>
+          <text x="480" y="150" text-anchor="middle" font-size="8" fill="var(--text-caption)">SQLite / PostgreSQL</text>
+
+          <!-- Divider -->
+          <line x1="40" y1="190" x2="720" y2="190" stroke="var(--border-light)" stroke-width="1" stroke-dasharray="4,4"/>
+
+          <!-- Analytics + Output -->
+          <text x="380" y="216" text-anchor="middle" font-size="10" font-weight="700" letter-spacing="0.08em" fill="var(--text-caption)" style="text-transform:uppercase">Analytics &amp; Delivery</text>
+
+          <!-- Analytics Engine -->
+          <rect x="40" y="234" width="200" height="100" rx="5" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.4"/>
+          <text x="140" y="254" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--diagram-accent)">Analytics Engine</text>
+          <text x="140" y="274" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Monthly spend breakdown</text>
+          <text x="140" y="288" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Top restaurants &amp; items</text>
+          <text x="140" y="302" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Day-of-week patterns</text>
+          <text x="140" y="316" text-anchor="middle" font-size="9" fill="var(--diagram-text)">Avg order &amp; tip %</text>
+
+          <!-- Arrows to outputs -->
+          <line x1="240" y1="264" x2="298" y2="254" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a3)"/>
+          <line x1="240" y1="304" x2="298" y2="308" stroke="var(--diagram-stroke)" stroke-width="1.2" marker-end="url(#a3)"/>
+
+          <!-- Web Dashboard -->
+          <rect x="300" y="234" width="200" height="44" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent2)" stroke-width="1.3"/>
+          <text x="400" y="254" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-accent2)">FastAPI Dashboard</text>
+          <text x="400" y="268" text-anchor="middle" font-size="9" fill="var(--text-caption)">Chart.js visualizations</text>
+
+          <!-- REST API -->
+          <rect x="520" y="234" width="180" height="44" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.1"/>
+          <text x="610" y="254" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-text)">REST API</text>
+          <text x="610" y="268" text-anchor="middle" font-size="9" fill="var(--text-caption)">7 endpoints, paginated</text>
+
+          <line x1="500" y1="256" x2="518" y2="256" stroke="var(--diagram-stroke)" stroke-width="1" marker-end="url(#a3)"/>
+
+          <!-- CLI -->
+          <rect x="300" y="290" width="200" height="44" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-stroke)" stroke-width="1.1"/>
+          <text x="400" y="310" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-text)">Typer CLI</text>
+          <text x="400" y="324" text-anchor="middle" font-size="9" fill="var(--text-caption)">import &middot; list &middot; stats &middot; serve</text>
+
+          <!-- Gmail Sync -->
+          <rect x="520" y="290" width="180" height="44" rx="4" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="1.3"/>
+          <text x="610" y="310" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--diagram-accent)">Gmail Auto-Sync</text>
+          <text x="610" y="324" text-anchor="middle" font-size="9" fill="var(--text-caption)">IMAP → parse → MySQL cron</text>
+
+          <line x1="500" y1="312" x2="518" y2="312" stroke="var(--diagram-accent)" stroke-width="1" marker-end="url(#a3-acc)"/>
+
+          <!-- Connection from DB to analytics -->
+          <line x1="480" y1="158" x2="480" y2="182" stroke="var(--diagram-accent2)" stroke-width="1.1" stroke-dasharray="4,3"/>
+          <line x1="480" y1="182" x2="140" y2="182" stroke="var(--diagram-accent2)" stroke-width="1.1" stroke-dasharray="4,3"/>
+          <line x1="140" y1="182" x2="140" y2="232" stroke="var(--diagram-accent2)" stroke-width="1.1" marker-end="url(#a3)"/>
+          <text x="310" y="180" text-anchor="middle" font-size="8.5" fill="var(--diagram-accent2)">query</text>
+        </svg>
+        <figcaption>Multi-source ETL pipeline: three importers normalize data into a cents-precision ORM; analytics engine serves insights via dashboard, API, and CLI.</figcaption>
+      </figure>
+    </div>
+
+    <h3>What I Built</h3>
+    <ul>
+      <li>Built three pluggable importers (CSV, JSON, .eml email) with a shared normalization layer and cents-precision money storage to avoid float drift</li>
+      <li>Designed the email importer with regex-based receipt parsing tolerant of formatting changes, with clear error boundaries</li>
+      <li>Implemented a Gmail auto-sync script using IMAP that fetches new Uber Eats receipts since the last known order date and inserts deduplicated records</li>
+      <li>Built 5 analytics functions: summary stats, monthly breakdown, top restaurants, top items, day-of-week spending patterns</li>
+      <li>Delivered through both a FastAPI web dashboard (with Chart.js visualizations) and a Typer CLI for scripting and automation</li>
+      <li>Full test suite with in-memory SQLite for fast, isolated tests</li>
+    </ul>
+
+    <h3>Key Metrics</h3>
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="impact-value">3 importers</div>
+        <div class="impact-label">CSV / JSON / Email</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">7 endpoints</div>
+        <div class="impact-label">REST API</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">5 analytics</div>
+        <div class="impact-label">Spend insights</div>
+      </div>
+      <div class="impact-item">
+        <div class="impact-value">Auto-sync</div>
+        <div class="impact-label">Gmail IMAP → MySQL</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <strong>About this portfolio.</strong> These projects are open-source and available on GitHub. Each was designed, built, and tested end-to-end — from architecture decisions through implementation and deployment. Code samples and full repositories available upon request.
+    <br><br>
+    <strong>Core competencies demonstrated:</strong> RAG pipeline design, LLM agent infrastructure (MCP), vector databases, data engineering &amp; ETL, API design, evaluation frameworks, full-stack development, Python ecosystem fluency.
+  </footer>
+
+</div>
