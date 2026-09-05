@@ -6,6 +6,7 @@ Usage:
   python3 .claude/hooks/session_report.py --limit 20      # more sessions
   python3 .claude/hooks/session_report.py --session <id>  # full timeline for one session
   python3 .claude/hooks/session_report.py --json          # machine-readable rollup
+  python3 .claude/hooks/session_report.py --feedback      # only feedback / bug reports
 """
 import argparse
 import json
@@ -41,6 +42,7 @@ def group_by_session(records: list) -> "OrderedDict[str, list]":
 def session_rollup(session_id: str, records: list) -> dict:
     skills = [r for r in records if r.get("event") == "skill"]
     mcp_calls = [r for r in records if r.get("event") == "mcp_tool"]
+    feedback = [r for r in records if r.get("event") == "feedback"]
     end = next((r for r in records if r.get("event") == "session_end"), None)
     start = next((r for r in records if r.get("event") == "session_start"), None)
     return {
@@ -62,6 +64,9 @@ def session_rollup(session_id: str, records: list) -> dict:
         "mcp_failures": sum(
             1 for r in mcp_calls if not (r.get("result") or {}).get("ok", True)
         ),
+        "feedback_reports": len(feedback),
+        "feedback_ids": [r.get("report_id") for r in feedback if r.get("report_id")],
+        "feedback_severities": sorted({r.get("severity") for r in feedback if r.get("severity")}),
     }
 
 
@@ -85,6 +90,12 @@ def print_summary(rollups: list) -> None:
             + (f" -> {', '.join(roll['mcp_servers'])}" if roll["mcp_servers"] else "")
             + (f" [{', '.join(roll['mcp_tools'])}]" if roll["mcp_tools"] else "")
         )
+        if roll["feedback_reports"]:
+            print(
+                f"  feedback: {roll['feedback_reports']} report(s)"
+                + (f" [{', '.join(roll['feedback_severities'])}]" if roll["feedback_severities"] else "")
+                + (f" -> {', '.join(roll['feedback_ids'])}" if roll["feedback_ids"] else "")
+            )
         print()
 
 
@@ -115,6 +126,21 @@ def print_timeline(session_id: str, records: list) -> None:
             detail = " ".join(bits)
             if record.get("query"):
                 detail += f"\n      {record['query']}"
+        elif event == "feedback":
+            result = record.get("result") or {}
+            bits = [f"{record.get('server')}.{record.get('tool')}"]
+            if record.get("severity"):
+                bits.append(f"severity={record['severity']}")
+            if record.get("category"):
+                bits.append(f"category={record['category']}")
+            if record.get("report_id"):
+                bits.append(f"id={record['report_id']}")
+            bits.append("ok" if result.get("ok", True) else "FAILED")
+            detail = " ".join(bits)
+            if record.get("description"):
+                detail += f"\n      {record['description']}"
+            if record.get("context"):
+                detail += f"\n      context: {record['context']}"
         elif event == "session_start":
             detail = f"source={record.get('source')}"
         elif event == "session_end":
@@ -130,10 +156,37 @@ def main() -> int:
     parser.add_argument("--session", help="show the full timeline for one session id")
     parser.add_argument("--limit", type=int, default=10, help="sessions to summarize (default 10)")
     parser.add_argument("--json", action="store_true", help="emit JSON instead of text")
+    parser.add_argument(
+        "--feedback", action="store_true", help="list only feedback / bug reports"
+    )
     parser.add_argument("--log", default=str(LOG_PATH), help="path to the activity log")
     args = parser.parse_args()
 
-    sessions = group_by_session(load_records(Path(args.log)))
+    records = load_records(Path(args.log))
+
+    if args.feedback:
+        reports = [r for r in records if r.get("event") == "feedback"]
+        if args.session:
+            reports = [r for r in reports if r.get("session_id") == args.session]
+        if args.json:
+            print(json.dumps(reports, ensure_ascii=False, indent=2))
+        elif not reports:
+            print("No feedback / bug reports logged yet.")
+        else:
+            for report in reports:
+                print(
+                    f"{report.get('timestamp')}  {report.get('report_id') or '(no id)'}  "
+                    f"severity={report.get('severity')} category={report.get('category')}  "
+                    f"session={report.get('session_id')}"
+                )
+                if report.get("description"):
+                    print(f"    {report['description']}")
+                if report.get("context"):
+                    print(f"    context: {report['context']}")
+                print()
+        return 0
+
+    sessions = group_by_session(records)
 
     if args.session:
         records = sessions.get(args.session)

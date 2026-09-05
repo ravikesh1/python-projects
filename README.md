@@ -164,12 +164,19 @@ The hook events that feed it:
 | `SessionStart` | `session_start` | session id, cwd, start source (`startup` / `resume` / `clear` / `compact`), transcript path |
 | `PostToolUse` (`Skill`) | `skill` | skill name, args, invocation level (`user_invoked` when you typed `/<skill>`, `model_invoked` when Claude loaded it itself), invocation number within the session, and the user prompt that triggered it |
 | `PostToolUse` (`mcp__*mysql*__*`) | `mcp_tool` | server, tool, database/table, the SQL statement (truncated to 500 chars), and a result summary: `ok`, `row_count`, `truncated`, `affected_rows`, or `error` |
-| `SessionEnd` | `session_end` | end reason plus a rollup: skill invocations, skills used, MCP calls, servers/tools used, failure count |
+| `PostToolUse` (MySQL MCP feedback tools) | `feedback` | severity, category, description, repro context, the returned report id, whether the submission succeeded, and the prompt behind it |
+| `SessionEnd` | `session_end` | end reason plus a rollup: skill invocations, skills used, MCP calls, servers/tools used, failure count, feedback reports (ids + severities) |
 
 The `PostToolUse` matcher is `Skill|mcp__.*mysql.*`, so any MCP server whose
 name contains "mysql" is logged; other MCP servers and ordinary tools are
 ignored. The hook swallows every error and always exits 0 — it can never block
 a tool call or break a session.
+
+**Feedback submissions** get their own record type. A MySQL MCP tool whose name
+matches `report_bug` / `report_issue` / `send_feedback` / `feedback` is logged
+as a `feedback` event rather than a plain `mcp_tool` call, so bug reports sent
+through the server are tracked separately from queries — including reports whose
+submission *failed* (`result.ok: false`), which are otherwise invisible.
 
 ### Reading the log
 
@@ -178,6 +185,7 @@ python3 .claude/hooks/session_report.py                 # rollup of recent sessi
 python3 .claude/hooks/session_report.py --limit 20      # more sessions
 python3 .claude/hooks/session_report.py --session <id>  # full timeline for one session
 python3 .claude/hooks/session_report.py --json          # machine-readable output
+python3 .claude/hooks/session_report.py --feedback      # only feedback / bug reports
 ```
 
 Example:
@@ -189,6 +197,16 @@ session sess_01ABC
   cwd     : /home/you/python-projects
   skills  : 1 invocation(s) [user 1 / model 0] -> mysql-explorer
   mcp     : 2 call(s), 1 failure(s) -> mysql [describe_table, read_query]
+  feedback: 1 report(s) [high] -> BR-20260905-001
+```
+
+And the feedback view, for reviewing what was reported about the server:
+
+```
+$ python3 .claude/hooks/session_report.py --feedback
+2026-09-05T18:08:14+00:00  BR-20260905-001  severity=high category=functionality  session=sess_01ABC
+    describe_table raises on a VIEW instead of returning columns
+    context: {"tool": "describe_table", "expected": "column list", "actual": "MySQL error"}
 ```
 
 ## Safety notes

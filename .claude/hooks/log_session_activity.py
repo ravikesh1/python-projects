@@ -6,8 +6,10 @@ event to .claude/logs/session-activity.jsonl (gitignored — local machine
 state, never part of the distributed plugin/skill):
 
   SessionStart  -> one `session_start` record per session
-  PostToolUse   -> a `skill` record for every Skill invocation, and an
-                   `mcp_tool` record for every MySQL MCP server tool call
+  PostToolUse   -> a `skill` record for every Skill invocation, an
+                   `mcp_tool` record for every MySQL MCP server tool call,
+                   and a `feedback` record when that call is a bug report /
+                   feedback submission (the MySQL MCP `report_bug` tool)
   SessionEnd    -> one `session_end` record carrying a per-session rollup
 
 This must never fail or block a tool call: any error here is swallowed and the
@@ -22,11 +24,14 @@ from pathlib import Path
 
 MAX_PROMPT_CHARS = 200
 MAX_QUERY_CHARS = 500
+MAX_FEEDBACK_CHARS = 1000
 LOG_PATH = Path(__file__).resolve().parent.parent / "logs" / "session-activity.jsonl"
 
 # mcp__<server>__<tool>; we care about servers whose name mentions mysql.
 MCP_TOOL_RE = re.compile(r"^mcp__(?P<server>[^_].*?)__(?P<tool>.+)$")
 MYSQL_SERVER_RE = re.compile(r"mysql", re.IGNORECASE)
+# Feedback/bug-report tools exposed by the MySQL MCP server (e.g. report_bug).
+FEEDBACK_TOOL_RE = re.compile(r"report_bug|report_issue|send_feedback|feedback", re.IGNORECASE)
 
 
 def now() -> str:
@@ -163,6 +168,22 @@ def summarize_result(tool_response) -> dict:
     return summary
 
 
+def extract_report_id(tool_response) -> str:
+    """Best-effort: the report id a feedback tool hands back."""
+    text = response_text(tool_response)
+    try:
+        parsed = json.loads(text)
+    except (json.JSONDecodeError, TypeError):
+        parsed = None
+    if isinstance(parsed, dict):
+        for key in ("id", "report_id", "bug_id", "reportId"):
+            value = parsed.get(key)
+            if isinstance(value, (str, int)):
+                return str(value)
+    match = re.search(r"\b(BR-\d{8}-\d+|[A-Z]{2,}-\d+)\b", text or "")
+    return match.group(1) if match else ""
+
+
 def handle_session_start(payload: dict) -> None:
     record = base_record(payload, "session_start")
     record.update(
@@ -199,6 +220,39 @@ def handle_skill(payload: dict) -> None:
     write_record(record)
 
 
+def handle_feedback(payload: dict, server: str, tool: str) -> None:
+    """A bug report / feedback submission sent through the MySQL MCP server."""
+    tool_input = payload.get("tool_input") or {}
+    context = tool_input.get("context")
+    if not isinstance(context, str):
+        context = json.dumps(context, ensure_ascii=False) if context else None
+
+    prior = read_session_records(payload.get("session_id"))
+    report_number = sum(1 for r in prior if r.get("event") == "feedback") + 1
+
+    result = summarize_result(payload.get("tool_response"))
+    report_id = extract_report_id(payload.get("tool_response"))
+
+    record = base_record(payload, "feedback")
+    record.update(
+        {
+            "server": server,
+            "tool": tool,
+            "report_number": report_number,
+            "report_id": report_id or None,
+            "severity": tool_input.get("severity"),
+            "category": tool_input.get("category"),
+            "description": truncate(tool_input.get("description"), MAX_FEEDBACK_CHARS),
+            "context": truncate(context, MAX_FEEDBACK_CHARS) if context else None,
+            "prompt_snippet": truncate(
+                last_user_text(payload.get("transcript_path", "")), MAX_PROMPT_CHARS
+            ),
+            "result": result,
+        }
+    )
+    write_record(record)
+
+
 def handle_mcp_tool(payload: dict, server: str, tool: str) -> None:
     tool_input = payload.get("tool_input") or {}
     query = tool_input.get("query") or tool_input.get("sql") or tool_input.get("statement")
@@ -228,14 +282,20 @@ def handle_post_tool_use(payload: dict) -> None:
         handle_skill(payload)
         return
     match = MCP_TOOL_RE.match(tool_name)
-    if match and MYSQL_SERVER_RE.search(match.group("server")):
-        handle_mcp_tool(payload, match.group("server"), match.group("tool"))
+    if not match or not MYSQL_SERVER_RE.search(match.group("server")):
+        return
+    server, tool = match.group("server"), match.group("tool")
+    if FEEDBACK_TOOL_RE.search(tool):
+        handle_feedback(payload, server, tool)
+    else:
+        handle_mcp_tool(payload, server, tool)
 
 
 def handle_session_end(payload: dict) -> None:
     prior = read_session_records(payload.get("session_id"))
     skills = [r for r in prior if r.get("event") == "skill"]
     mcp_calls = [r for r in prior if r.get("event") == "mcp_tool"]
+    feedback = [r for r in prior if r.get("event") == "feedback"]
     started_at = next(
         (r.get("timestamp") for r in prior if r.get("event") == "session_start"), None
     )
@@ -253,6 +313,11 @@ def handle_session_end(payload: dict) -> None:
                 "mcp_tools_used": sorted({r.get("tool") for r in mcp_calls if r.get("tool")}),
                 "mcp_failures": sum(
                     1 for r in mcp_calls if not (r.get("result") or {}).get("ok", True)
+                ),
+                "feedback_reports": len(feedback),
+                "feedback_ids": [r.get("report_id") for r in feedback if r.get("report_id")],
+                "feedback_severities": sorted(
+                    {r.get("severity") for r in feedback if r.get("severity")}
                 ),
             },
         }

@@ -22,6 +22,11 @@ users' existing expectations of how a skill behaves.
   session with a rollup summary.
 - Added `.claude/hooks/session_report.py` to read the log back as a per-session
   summary, a single-session timeline, or JSON.
+- Log feedback sent through the MySQL MCP server (`report_bug` and friends) as
+  its own `feedback` record — severity, category, description, repro context,
+  returned report id, and whether the submission succeeded — instead of a
+  generic tool call. Rolled into the session summary and readable on its own
+  with `session_report.py --feedback`.
 
 ## [0.1.0] - 2026-06-26
 ### mysql-explorer skill
