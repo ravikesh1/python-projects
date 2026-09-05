@@ -10,7 +10,8 @@ build/
 .mypy_cache/
 .ruff_cache/
 
-# local skill-usage dogfooding log (see .claude/hooks/log_skill_usage.py)
+# local session activity log (see .claude/hooks/log_session_activity.py)
+.claude/logs/
 .claude/skill-usage.log.jsonl
 
 # SQLite database files

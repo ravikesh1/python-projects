@@ -13,6 +13,15 @@ guidance*, not code: **patch** = wording/typo/non-behavioral fixes, **minor**
 users' existing expectations of how a skill behaves.
 
 ## [Unreleased]
+### session activity logging (`.claude/hooks/`)
+- Replaced the skill-only usage hook with a session activity logger wired to
+  `SessionStart`, `PostToolUse` and `SessionEnd`. It records one line per
+  session start/end plus every `Skill` invocation (with invocation level:
+  user-invoked vs model-invoked) and every MySQL MCP server tool call (tool,
+  database/table, statement, row count / truncation / error), and closes each
+  session with a rollup summary.
+- Added `.claude/hooks/session_report.py` to read the log back as a per-session
+  summary, a single-session timeline, or JSON.
 
 ## [0.1.0] - 2026-06-26
 ### mysql-explorer skill

@@ -148,6 +148,49 @@ uv run mcp-mysql-evals
 See [`evals/README.md`](evals/README.md) for what it checks and how to point it at
 a database.
 
+## Session activity logging
+
+Local hooks in `.claude/` record what each Claude Code session actually did in
+this repo — which skills were invoked and every call to a MySQL MCP server.
+Configured in `.claude/settings.json`, implemented by
+`.claude/hooks/log_session_activity.py`, and appended as JSON lines to
+`.claude/logs/session-activity.jsonl` (gitignored — local machine state, never
+shipped with the plugin/skill).
+
+The hook events that feed it:
+
+| Event | Record | What it captures |
+| --- | --- | --- |
+| `SessionStart` | `session_start` | session id, cwd, start source (`startup` / `resume` / `clear` / `compact`), transcript path |
+| `PostToolUse` (`Skill`) | `skill` | skill name, args, invocation level (`user_invoked` when you typed `/<skill>`, `model_invoked` when Claude loaded it itself), invocation number within the session, and the user prompt that triggered it |
+| `PostToolUse` (`mcp__*mysql*__*`) | `mcp_tool` | server, tool, database/table, the SQL statement (truncated to 500 chars), and a result summary: `ok`, `row_count`, `truncated`, `affected_rows`, or `error` |
+| `SessionEnd` | `session_end` | end reason plus a rollup: skill invocations, skills used, MCP calls, servers/tools used, failure count |
+
+The `PostToolUse` matcher is `Skill|mcp__.*mysql.*`, so any MCP server whose
+name contains "mysql" is logged; other MCP servers and ordinary tools are
+ignored. The hook swallows every error and always exits 0 — it can never block
+a tool call or break a session.
+
+### Reading the log
+
+```bash
+python3 .claude/hooks/session_report.py                 # rollup of recent sessions
+python3 .claude/hooks/session_report.py --limit 20      # more sessions
+python3 .claude/hooks/session_report.py --session <id>  # full timeline for one session
+python3 .claude/hooks/session_report.py --json          # machine-readable output
+```
+
+Example:
+
+```
+session sess_01ABC
+  started : 2026-09-05T17:59:16+00:00
+  ended   : 2026-09-05T18:24:02+00:00
+  cwd     : /home/you/python-projects
+  skills  : 1 invocation(s) [user 1 / model 0] -> mysql-explorer
+  mcp     : 2 call(s), 1 failure(s) -> mysql [describe_table, read_query]
+```
+
 ## Safety notes
 
 - Writes and DDL are disabled by default; opt in explicitly via env vars.
